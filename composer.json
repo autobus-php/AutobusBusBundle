@@ -1,0 +1,24 @@
+{
+    "name": "autobus-php/autobus-bus-bundle",
+    "license": "MIT",
+    "type": "symfony-bundle",
+    "description": "AutobusBusBundle",
+    "authors": [
+        {
+            "name": "Michael BOUVY",
+            "email": "michael.bouvy@clickandmortar.fr"
+        },
+        {
+            "name": "Pascal DENIS",
+            "email": "pascal.denis@businessdecision.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Autobus\\Bundle\\BusBundle\\": ""
+        }
+    },
+    "require": {
+        "php": ">=7.0.0"
+    }
+}
