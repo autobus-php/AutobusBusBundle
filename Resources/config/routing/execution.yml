@@ -1,0 +1,4 @@
+execution_show:
+    path:     /{id}/show
+    defaults: { _controller: "AutobusBusBundle:Execution:show" }
+    methods:  GET

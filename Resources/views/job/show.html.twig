@@ -1,0 +1,43 @@
+{% extends 'AutobusBusBundle::base.html.twig' %}
+
+{% block content %}
+    <h1>{{ 'Job detail'|trans }} : {{ job.name }}</h1>
+
+    <h2>{{ 'Execution history'|trans }}</h2>
+
+    <table class="table table-condensed table-striped">
+        <thead>
+        <tr>
+            <th>{{ 'Date'|trans }}</th>
+            <th>{{ 'Caller'|trans }}</th>
+            <th>{{ 'Duration'|trans }}</th>
+            <th>{{ 'State'|trans }}</th>
+            <th>{{ 'Actions'|trans }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for execution in job.executions %}
+            <tr>
+                <td>{{ execution.date|date('Y-m-d H:i:s') }}</td>
+                <td>{{ execution.caller }}</td>
+                <td>{{ execution.duration }} ms</td>
+                <td>{{ execution.state }}</td>
+                <td><a href="{{ path('execution_show', {id: execution.id}) }}">{{ 'Detail'|trans }}</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <ul>
+        <li>
+            <a href="{{ path('job_index') }}">Back to the list</a>
+        </li>
+        <li>
+            <a href="{{ path('job_edit', { 'id': job.id }) }}">Edit</a>
+        </li>
+        <li>
+            {{ form_start(delete_form) }}
+            <input type="submit" value="Delete">
+            {{ form_end(delete_form) }}
+        </li>
+    </ul>
+{% endblock %}

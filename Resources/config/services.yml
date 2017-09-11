@@ -1,0 +1,50 @@
+services:
+  Autobus\Bundle\BusBundle\Runner\RunnerChain: ~
+
+  form.type.service:
+    class: Autobus\Bundle\BusBundle\Form\JobType
+    arguments: ['@Autobus\Bundle\BusBundle\Runner\RunnerChain']
+    tags: ['form.type']
+
+  bus.job.factory:
+    class: Autobus\Bundle\BusBundle\Entity\JobFactory
+
+  bus.form.job.factory:
+    class: Autobus\Bundle\BusBundle\Form\JobTypeFactory
+
+  bus.event_listener.start_execution:
+    class: Autobus\Bundle\BusBundle\EventListener\StartExecutionSubscriber
+    tags: ['kernel.event_subscriber']
+
+  bus.event_listener.finish_execution:
+    class: Autobus\Bundle\BusBundle\EventListener\FinishExecutionSubscriber
+    arguments:
+      - '@logger'
+    tags: ['kernel.event_subscriber']
+
+  bus.event_listener.runner_exception_handle:
+    class: Autobus\Bundle\BusBundle\EventListener\RunnerExceptionHandleSubscriber
+    tags: ['kernel.event_subscriber']
+
+  bus.event_listener.secure_web_job:
+    class: Autobus\Bundle\BusBundle\EventListener\SecureWebJobSubscriber
+    arguments:
+      - '@Autobus\Bundle\BusBundle\Security\SecurityChain'
+    tags: ['kernel.event_subscriber']
+
+  bus.converter.job:
+    class:  Autobus\Bundle\BusBundle\Converter\JobParamConverter
+    arguments:
+      - '@bus.routing.matcher.job_url'
+      - '@doctrine.orm.entity_manager'
+    tags:
+      - { name: request.param_converter, converter: bus_job_converter}
+
+  bus.routing.route_collection:
+    class: Symfony\Component\Routing\RouteCollection
+
+  bus.routing.matcher.job_url:
+    class: Autobus\Bundle\BusBundle\Routing\Matcher\JobUrlMatcher
+    arguments:
+      - '@bus.routing.route_collection'
+      - '@router.request_context'

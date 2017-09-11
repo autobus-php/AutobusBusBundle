@@ -1,0 +1,31 @@
+job_index:
+    path:     /
+    defaults: { _controller: "AutobusBusBundle:Job:index" }
+    methods:  GET
+
+job_show:
+    path:     /{id}/show
+    defaults: { _controller: "AutobusBusBundle:Job:show" }
+    methods:  GET
+
+job_new:
+    path:     /new
+    defaults: { _controller: "AutobusBusBundle:Job:new" }
+    methods:  [GET, POST]
+
+job_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "AutobusBusBundle:Job:edit" }
+    methods:  [GET, POST]
+
+job_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "AutobusBusBundle:Job:delete" }
+    methods:  DELETE
+
+job_execution:
+    path:     /{path}
+    defaults: { _controller: "AutobusBusBundle:Job:execute" }
+    methods:  [GET, POST]
+    requirements:
+        path: ".*"

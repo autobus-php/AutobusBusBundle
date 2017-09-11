@@ -1,0 +1,40 @@
+{% extends 'AutobusBusBundle::base.html.twig' %}
+
+{% block content %}
+    <h1>{{ 'Execution'|trans }}</h1>
+
+    <h2>{{ 'Detail'|trans }}</h2>
+    <table class="table table-condensed table-striped">
+        <tbody>
+        <tr>
+            <td>{{ 'Job'|trans }}</td>
+            <td><a href="{{ path('job_show', {id: execution.job.id}) }}">{{ execution.job.name }}</a></td>
+        </tr>
+        <tr>
+            <td>{{ 'State'|trans }}</td>
+            <td>{{ execution.state }}</td>
+        </tr>
+        <tr>
+            <td>{{ 'Date'|trans }}</td>
+            <td>{{ execution.date|date('Y-m-d H:i:s') }}</td>
+        </tr>
+        <tr>
+            <td>{{ 'Caller'|trans }}</td>
+            <td>{{ execution.caller }}</td>
+        </tr>
+        <tr>
+            <td>{{ 'Duration'|trans }}</td>
+            <td>{{ execution.duration }} ms</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h2>{{ 'Request'|trans }}</h2>
+    <pre>{{ execution.request }}</pre>
+
+    <h2>{{ 'Response'|trans }}</h2>
+    <pre>{{ execution.response }}</pre>
+
+    <h2>{{ 'Logs'|trans }}</h2>
+    <pre>{{ execution.logs }}</pre>
+{% endblock %}
