@@ -1,0 +1,43 @@
+Save: Sauvegarder
+Name: Nom
+Service: Service
+Path: Chemin
+Config: Configuration
+Actions: Actions
+Services list: Liste des services
+Create a new service: Créer un service
+Edit: Editer
+Call history: Historique des appels
+Caller: Appelant
+Date: Date
+State: État
+Duration: Durée
+View: Voir
+Detail: Détail
+Details: Détails
+Service call: Appel à un service
+Request: Requête
+Response: Réponse
+Logs: Logs
+Trace: Tracé
+Secure: Sécurisé
+Type: Type
+Choose: Choisir
+Create: Créer
+Schedule: Fréquence
+Choose ...: Choisir ...
+Group: Groupe
+Job creation: Création d'un job
+Job edit: Edition d'un job
+Create a new job: Créer un job
+Jobs list: Liste des jobs
+Execution history: Historique d'exécution
+Job detail: Détail d'un job
+Invalid schedule format (should be cron-compliant): Format de la fréquence invalide (doit être au format cron)
+Runner: Runner
+Jobs: Jobs
+Executions: Exécutions
+Methods: Méthodes
+Delete: Supprimer
+Queue: Queue
+Last run: Dernière exécution

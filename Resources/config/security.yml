@@ -1,0 +1,10 @@
+services:
+  Autobus\Bundle\BusBundle\Security\SecurityChain: ~
+
+  bus.security_strategy.basic_auth:
+    class: Autobus\Bundle\BusBundle\Security\Strategy\BasicAuthStrategy
+    tags: ['bus.security_strategy']
+
+  bus.security_strategy.ip_white_list:
+    class: Autobus\Bundle\BusBundle\Security\Strategy\IPWhiteListStrategy
+    tags: ['bus.security_strategy']
