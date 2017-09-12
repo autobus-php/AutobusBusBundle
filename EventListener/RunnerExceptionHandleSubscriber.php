@@ -45,7 +45,7 @@ class RunnerExceptionHandleSubscriber implements EventSubscriberInterface
         $exception = $event->getException();
         $response = $event->getResponse();
 
-        $response->setContent($exception->getMessage());
+        $event->getContext()->setMessage($exception->getMessage());
         if ($exception instanceof BadRequestHttpException) {
             $response->setStatusCode(400);
         } elseif ($exception instanceof AuthenticationException) {
