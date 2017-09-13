@@ -3,6 +3,7 @@
 namespace Autobus\Bundle\BusBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * QueueJob
@@ -14,6 +15,9 @@ class QueueJob extends Job
 {
     /**
      * @var string
+     *
+     * @Assert\NotBlank()
+     * @Assert\Length(max=255)
      *
      * @ORM\Column(name="queue", type="string")
      */

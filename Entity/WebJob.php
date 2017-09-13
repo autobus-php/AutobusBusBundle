@@ -33,7 +33,8 @@ class WebJob extends Job
     /**
      * @var string
      *
-     * @Assert\Valid()
+     * @Assert\NotBlank()
+     * @Assert\Length(max=255)
      *
      * @ORM\Column(name="path", type="string", unique=true, length=255)
      */
