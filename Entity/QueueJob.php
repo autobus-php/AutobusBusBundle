@@ -8,7 +8,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * QueueJob
  *
- * @ORM\Table(name="job_queue")
  * @ORM\Entity(repositoryClass="Autobus\Bundle\BusBundle\Repository\QueueJobRepository")
  */
 class QueueJob extends Job
@@ -19,7 +18,7 @@ class QueueJob extends Job
      * @Assert\NotBlank()
      * @Assert\Length(max=255)
      *
-     * @ORM\Column(name="queue", type="string")
+     * @ORM\Column(type="string")
      */
     private $queue;
 

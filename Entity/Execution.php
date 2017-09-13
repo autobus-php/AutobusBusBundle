@@ -19,7 +19,7 @@ class Execution
     /**
      * @var int
      *
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
@@ -34,35 +34,35 @@ class Execution
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date", type="datetime")
+     * @ORM\Column(type="datetime")
      */
     private $date;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="caller", type="string")
+     * @ORM\Column(type="string")
      */
     private $caller;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="request", type="text", nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      */
     private $request;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="response", type="text", nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      */
     private $response;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="logs", type="text", nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      */
     private $logs;
 
@@ -71,7 +71,7 @@ class Execution
      *
      * @var int
      *
-     * @ORM\Column(name="duration", type="integer")
+     * @ORM\Column(type="integer")
      */
     private $duration;
 
@@ -80,7 +80,7 @@ class Execution
      *
      * @var string
      *
-     * @ORM\Column(name="state", type="string")
+     * @ORM\Column(type="string")
      */
     private $state;
 

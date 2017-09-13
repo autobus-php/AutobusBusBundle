@@ -10,7 +10,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * WebService
  *
- * @ORM\Table(name="job_web")
  * @ORM\Entity(repositoryClass="Autobus\Bundle\BusBundle\Repository\WebJobRepository")
  * @UniqueEntity("path")
  */
@@ -19,14 +18,14 @@ class WebJob extends Job
     /**
      * @var array
      *
-     * @ORM\Column(name="methods", type="array")
+     * @ORM\Column(type="array")
      */
     protected $methods;
 
     /**
      * @var bool
      *
-     * @ORM\Column(name="secure", type="boolean")
+     * @ORM\Column(type="boolean")
      */
     protected $secure;
 
@@ -36,7 +35,7 @@ class WebJob extends Job
      * @Assert\NotBlank()
      * @Assert\Length(max=255)
      *
-     * @ORM\Column(name="path", type="string", unique=true, length=255)
+     * @ORM\Column(type="string", unique=true, length=255)
      */
     protected $path;
 

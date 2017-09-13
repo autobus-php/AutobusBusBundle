@@ -10,7 +10,6 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 /**
  * CronJob
  *
- * @ORM\Table(name="cron_job")
  * @ORM\Entity(repositoryClass="Autobus\Bundle\BusBundle\Repository\CronJobRepository")
  */
 class CronJob extends Job
@@ -18,14 +17,14 @@ class CronJob extends Job
     /**
      * @var array
      *
-     * @ORM\Column(name="schedule", type="string", nullable=false)
+     * @ORM\Column(type="string", nullable=false)
      */
     protected $schedule;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="next_run_date", type="datetime", nullable=true)
+     * @ORM\Column(type="datetime", nullable=true)
      */
     protected $nextRunDate;
 
