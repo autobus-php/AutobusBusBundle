@@ -7,7 +7,6 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Service call
  *
- * @ORM\Table(name="job_execution")
  * @ORM\Entity(repositoryClass="Autobus\Bundle\BusBundle\Repository\ExecutionRepository")
  */
 class Execution
