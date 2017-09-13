@@ -19,7 +19,7 @@ class QueueJob extends Job
      * @Assert\NotBlank()
      * @Assert\Length(max=255)
      *
-     * @ORM\Column(name="queue", type="string")
+     * @ORM\Column(type="string")
      */
     private $queue;
 

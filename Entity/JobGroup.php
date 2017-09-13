@@ -16,7 +16,7 @@ class JobGroup
     /**
      * @var int
      *
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
@@ -25,7 +25,7 @@ class JobGroup
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="text")
+     * @ORM\Column(type="text")
      */
     private $name;
 

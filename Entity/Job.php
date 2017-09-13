@@ -23,7 +23,7 @@ abstract class Job
     /**
      * @var int
      *
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
@@ -35,7 +35,7 @@ abstract class Job
      * @Assert\NotBlank()
      * @Assert\Length(max=255)
      *
-     * @ORM\Column(name="name", type="string", length=255)
+     * @ORM\Column(type="string", length=255)
      */
     protected $name;
 
@@ -45,14 +45,14 @@ abstract class Job
      * @Assert\NotBlank()
      * @Assert\Length(max=255)
      *
-     * @ORM\Column(name="service", type="string", length=255)
+     * @ORM\Column(type="string", length=255)
      */
     protected $runner;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="config", type="text", nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      */
     protected $config;
 
@@ -64,21 +64,21 @@ abstract class Job
     /**
      * @var bool
      *
-     * @ORM\Column(name="trace", type="boolean")
+     * @ORM\Column(type="boolean")
      */
     protected $trace;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="created_at", type="datetime")
+     * @ORM\Column(type="datetime")
      */
     protected $createdAt;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="updated_at", type="datetime")
+     * @ORM\Column(type="datetime")
      */
     protected $updatedAt;
 
