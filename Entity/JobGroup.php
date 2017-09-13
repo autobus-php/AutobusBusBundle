@@ -8,7 +8,6 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * JobGroup
  *
- * @ORM\Table(name="job_group")
  * @ORM\Entity(repositoryClass="Autobus\Bundle\BusBundle\Repository\JobGroupRepository")
  */
 class JobGroup

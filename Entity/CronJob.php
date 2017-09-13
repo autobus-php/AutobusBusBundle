@@ -10,7 +10,6 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 /**
  * CronJob
  *
- * @ORM\Table(name="cron_job")
  * @ORM\Entity(repositoryClass="Autobus\Bundle\BusBundle\Repository\CronJobRepository")
  */
 class CronJob extends Job

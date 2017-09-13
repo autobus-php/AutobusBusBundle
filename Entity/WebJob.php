@@ -10,7 +10,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * WebService
  *
- * @ORM\Table(name="job_web")
  * @ORM\Entity(repositoryClass="Autobus\Bundle\BusBundle\Repository\WebJobRepository")
  * @UniqueEntity("path")
  */

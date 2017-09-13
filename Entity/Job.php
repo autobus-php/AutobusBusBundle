@@ -11,11 +11,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Service
  *
- * @ORM\Table(name="job")
  * @ORM\Entity(repositoryClass="Autobus\Bundle\BusBundle\Repository\JobRepository")
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="discr", type="string")
- * @ORM\DiscriminatorMap({"job_web" = "WebJob", "job_queue" = "QueueJob", "job_cron" = "CronJob"})
+ * @ORM\DiscriminatorMap({"web_job" = "WebJob", "queue_job" = "QueueJob", "cron_job" = "CronJob"})
  * @ORM\HasLifecycleCallbacks()
  */
 abstract class Job
