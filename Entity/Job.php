@@ -93,7 +93,6 @@ abstract class Job
 
     /**
      * @ORM\ManyToOne(targetEntity="Autobus\Bundle\BusBundle\Entity\JobGroup", inversedBy="jobs")
-     * @ORM\JoinColumn(name="group_id", referencedColumnName="id")
      */
     private $group;
 

@@ -26,7 +26,6 @@ class Execution
 
     /**
      * @ORM\ManyToOne(targetEntity="Autobus\Bundle\BusBundle\Entity\Job", inversedBy="executions")
-     * @ORM\JoinColumn(name="service", referencedColumnName="id")
      */
     private $job;
 
