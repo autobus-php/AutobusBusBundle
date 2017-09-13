@@ -32,12 +32,18 @@ abstract class Job
     /**
      * @var string
      *
+     * @Assert\NotBlank()
+     * @Assert\Length(max=255)
+     *
      * @ORM\Column(name="name", type="string", length=255)
      */
     protected $name;
 
     /**
      * @var string
+     *
+     * @Assert\NotBlank()
+     * @Assert\Length(max=255)
      *
      * @ORM\Column(name="service", type="string", length=255)
      */
