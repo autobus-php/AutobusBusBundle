@@ -3,6 +3,7 @@
 namespace Autobus\Bundle\BusBundle\Entity;
 
 use Autobus\Bundle\BusBundle\Context;
+use Autobus\Bundle\BusBundle\Model\WebJobInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -13,7 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="Autobus\Bundle\BusBundle\Repository\WebJobRepository")
  * @UniqueEntity("path")
  */
-class WebJob extends Job
+class WebJob extends Job implements WebJobInterface
 {
     /**
      * @var array
