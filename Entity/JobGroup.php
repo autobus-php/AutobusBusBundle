@@ -2,6 +2,7 @@
 
 namespace Autobus\Bundle\BusBundle\Entity;
 
+use Autobus\Bundle\BusBundle\Model\JobGroup as BaseJobGroup;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Entity(repositoryClass="Autobus\Bundle\BusBundle\Repository\JobGroupRepository")
  */
-class JobGroup
+class JobGroup extends BaseJobGroup
 {
     /**
      * @var int
@@ -19,59 +20,19 @@ class JobGroup
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
      *
      * @ORM\Column(type="text")
      */
-    private $name;
+    protected $name;
 
     /**
+     * @var ArrayCollection
+     *
      * @ORM\OneToMany(targetEntity="Autobus\Bundle\BusBundle\Entity\Job", mappedBy="group")
      */
     protected $jobs;
-
-    public function __construct()
-    {
-        $this->jobs = new ArrayCollection();
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->getName();
-    }
-
-    /**
-     * Get id
-     *
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param string $name
-     * @return JobGroup
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
 }

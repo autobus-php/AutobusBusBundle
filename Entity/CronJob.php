@@ -2,6 +2,7 @@
 
 namespace Autobus\Bundle\BusBundle\Entity;
 
+use Autobus\Bundle\BusBundle\Model\CronJobInterface;
 use Cron\CronExpression;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -12,7 +13,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  *
  * @ORM\Entity(repositoryClass="Autobus\Bundle\BusBundle\Repository\CronJobRepository")
  */
-class CronJob extends Job
+class CronJob extends Job implements CronJobInterface
 {
     /**
      * @var array

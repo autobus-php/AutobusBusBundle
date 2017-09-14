@@ -3,6 +3,7 @@
 namespace Autobus\Bundle\BusBundle\Entity;
 
 use Autobus\Bundle\BusBundle\Context;
+use \Autobus\Bundle\BusBundle\Model\Job as BaseJob;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
@@ -17,7 +18,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\DiscriminatorMap({"web_job" = "WebJob", "queue_job" = "QueueJob", "cron_job" = "CronJob"})
  * @ORM\HasLifecycleCallbacks()
  */
-abstract class Job
+abstract class Job extends BaseJob
 {
     /**
      * @var int
@@ -92,9 +93,11 @@ abstract class Job
     protected $lastExecution;
 
     /**
+     * @var JobGroup
+     *
      * @ORM\ManyToOne(targetEntity="Autobus\Bundle\BusBundle\Entity\JobGroup", inversedBy="jobs")
      */
-    private $group;
+    protected $group;
 
     public function __construct()
     {
@@ -352,8 +355,8 @@ abstract class Job
     {
         if ($this->lastExecution === null) {
             $criteria = Criteria::create()
-              ->orderBy(['date' => Criteria::DESC])
-              ->setMaxResults(1);
+                ->orderBy(['date' => Criteria::DESC])
+                ->setMaxResults(1);
 
             $lastExecution = $this->getExecutions()->matching($criteria)->first();
             $this->lastExecution = $lastExecution ? $lastExecution : null;
