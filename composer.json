@@ -18,10 +18,11 @@
             "Autobus\\Bundle\\BusBundle\\": ""
         }
     },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "require": {
         "php": ">=7.0.0",
         "autobus-php/autobus-bus-export-bundle": "dev-master",
         "autobus-php/autobus-bus-sample-bundle": "dev-master"
-    },
-    "minimum-stability": "dev"
+    }
 }
