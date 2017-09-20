@@ -10,7 +10,6 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 interface CronJobInterface
 {
     /**
-     * @Assert\Callback
      * @param ExecutionContextInterface $context
      * @param $payload
      */
