@@ -1,2 +1,2 @@
-{{ 'Path'|trans }} : <a href="{{ path('job_execution', { 'path': job.path }) }}">{{ path('job_execution', { 'path': job.path }) }}</a><br/>
+{{ 'Path'|trans }} : <a href="{{ path('bus_job_execution', { 'path': job.path }) }}">{{ path('bus_job_execution', { 'path': job.path }) }}</a><br/>
 {{ 'Methods'|trans }} : {{ job.methods|join(', ') }}<br/>

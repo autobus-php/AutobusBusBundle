@@ -23,9 +23,3 @@ job_delete:
     defaults: { _controller: "AutobusBusBundle:Job:delete" }
     methods:  DELETE
 
-job_execution:
-    path:     /{path}
-    defaults: { _controller: "AutobusBusBundle:Job:execute" }
-    methods:  [GET, POST]
-    requirements:
-        path: ".*"

@@ -1,7 +1,14 @@
 bus_job:
     resource: "@AutobusBusBundle/Resources/config/routing/job.yml"
-    prefix:   /job
+    prefix:   /admin/job
+
+bus_job_execution:
+    path:     /job/{path}
+    defaults: { _controller: "AutobusBusBundle:Job:execute" }
+    methods:  [GET, POST]
+    requirements:
+        path: ".*"
 
 bus_execution:
     resource: "@AutobusBusBundle/Resources/config/routing/execution.yml"
-    prefix:   /execution
+    prefix:   /admin/execution
