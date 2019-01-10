@@ -6,6 +6,7 @@ use Autobus\Bundle\BusBundle\Context;
 use Autobus\Bundle\BusBundle\Entity\Execution;
 use Autobus\Bundle\BusBundle\Entity\Job;
 use Autobus\Bundle\BusBundle\Entity\WebJob;
+use Autobus\Bundle\BusBundle\Repository\ExecutionRepository;
 use Autobus\Bundle\BusBundle\Runner\RunnerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,6 +19,13 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
  */
 class JobController extends Controller
 {
+    /**
+     * Executions per page on job show
+     *
+     * @var int
+     */
+    const PAGINATION_EXECUTIONS_PER_PAGE = 20;
+
     /**
      * Lists all job entities.
      *
@@ -70,14 +78,30 @@ class JobController extends Controller
     /**
      * Finds and displays a job entity.
      *
+     * @param Job $job
+     * @param int $page
+     *
+     * @return Response
      */
-    public function showAction(Job $job)
+    public function showAction(Job $job, $page)
     {
         $deleteForm = $this->createDeleteForm($job);
 
+        $em = $this->getDoctrine()->getManager();
+        /** @var ExecutionRepository $executionRepository */
+        $executionRepository = $em->getRepository('AutobusBusBundle:Execution');
+        $executionsQuery     = $executionRepository->getQueryByJob($job);
+        $paginator           = $this->get('knp_paginator');
+        $executions          = $paginator->paginate(
+            $executionsQuery,
+            $page,
+            self::PAGINATION_EXECUTIONS_PER_PAGE
+        );
+
         return $this->render('AutobusBusBundle::job/show.html.twig', array(
-            'job' => $job,
+            'job'         => $job,
             'delete_form' => $deleteForm->createView(),
+            'executions'  => $executions,
         ));
     }
 
