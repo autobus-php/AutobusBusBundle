@@ -4,8 +4,8 @@ job_index:
     methods:  GET
 
 job_show:
-    path:     /{id}/show
-    defaults: { _controller: "AutobusBusBundle:Job:show" }
+    path:     /{id}/show/{page}
+    defaults: { _controller: "AutobusBusBundle:Job:show", page: 1 }
     methods:  GET
 
 job_new:

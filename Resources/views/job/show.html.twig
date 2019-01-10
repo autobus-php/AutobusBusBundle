@@ -16,7 +16,7 @@
         </tr>
         </thead>
         <tbody>
-        {% for execution in job.executions %}
+        {% for execution in executions %}
             <tr>
                 <td>{{ execution.date|date('Y-m-d H:i:s') }}</td>
                 <td>{{ execution.caller }}</td>
@@ -27,6 +27,9 @@
         {% endfor %}
         </tbody>
     </table>
+    <div class="navigation text-center">
+        {{ knp_pagination_render(executions) }}
+    </div>
     <ul>
         <li>
             <a href="{{ path('job_index') }}">Back to the list</a>
