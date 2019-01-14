@@ -15,17 +15,19 @@ class ExecutionRepository extends \Doctrine\ORM\EntityRepository
     /**
      * Get executions query by $job
      *
-     * @param Job $job
+     * @param Job    $job
+     * @param string $dateSort
      *
      * @return Execution[]
      */
-    public function getQueryByJob(Job $job)
+    public function getQueryByJob(Job $job, $dateSort = 'DESC')
     {
         return $this->createQueryBuilder('e')
                     ->where('e.job = :jobId')
                     ->setParameters([
                         'jobId' => $job->getId(),
                     ])
+                    ->orderBy('e.date', $dateSort)
                     ->getQuery();
     }
 }
