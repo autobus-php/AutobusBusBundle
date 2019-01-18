@@ -25,6 +25,6 @@
         "knplabs/knp-paginator-bundle": "2.8.*",
         "autobus-php/autobus-bus-export-bundle": "dev-master",
         "autobus-php/autobus-bus-sample-bundle": "dev-master",
-        "php-amqplib/php-amqplib": "2.7.*"
+        "php-amqplib/php-amqplib": "2.8.*"
     }
 }
