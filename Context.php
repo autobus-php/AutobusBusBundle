@@ -24,6 +24,7 @@ class Context
 
     /**
      * @param mixed $message
+     *
      * @return Context
      */
     public function setMessage($message)
@@ -42,7 +43,21 @@ class Context
     }
 
     /**
+     * @return array
+     */
+    public function getJsonMessageAsArray()
+    {
+        $messageAsArray = json_decode($this->getMessage(), true);
+        if (!is_array($messageAsArray)) {
+            return [];
+        }
+
+        return $messageAsArray;
+    }
+
+    /**
      * @param \Symfony\Component\HttpFoundation\Response $response
+     *
      * @return Context
      */
     public function setResponse($response)
@@ -62,6 +77,7 @@ class Context
 
     /**
      * @param \Symfony\Component\HttpFoundation\Request $request
+     *
      * @return Context
      */
     public function setRequest($request)
