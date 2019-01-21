@@ -35,7 +35,7 @@ abstract class AbstractRunner implements RunnerInterface
      *
      * @return mixed
      */
-    abstract protected function process(Context $context, Job $job, Execution $execution);
+    abstract protected function run(Context $context, Job $job, Execution $execution);
 
     /**
      * @param Context   $context
@@ -50,8 +50,7 @@ abstract class AbstractRunner implements RunnerInterface
 
         try {
             $this->eventDispatcher->dispatch(RunnerEvents::BEFORE_HANDLE, $event);
-
-            $this->process($context, $job, $execution);
+            $this->run($context, $job, $execution);
             $execution->setState($execution::STATE_SUCCESS);
             $this->eventDispatcher->dispatch(RunnerEvents::SUCCESS, $event);
         } catch (\Exception $exception) {

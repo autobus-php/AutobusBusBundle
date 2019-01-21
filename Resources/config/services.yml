@@ -48,3 +48,9 @@ services:
     arguments:
       - '@bus.routing.route_collection'
       - '@router.request_context'
+
+  # Queue
+  bus.queue.writer:
+    class: Autobus\Bundle\BusBundle\Queue\Writer
+    arguments:
+    - '@enqueue.client.default.producer'
