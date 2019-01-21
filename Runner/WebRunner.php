@@ -8,9 +8,8 @@ use Autobus\Bundle\BusBundle\Entity\Execution;
 
 class WebRunner extends AbstractRunner
 {
-
-    protected function process(Context $context, Job $job, Execution $execution)
+    protected function run(Context $context, Job $job, Execution $execution)
     {
-        // TODO: Implement process() method.
+        // TODO: Implement run() method.
     }
 }
