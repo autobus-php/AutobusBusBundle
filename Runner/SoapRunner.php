@@ -33,6 +33,7 @@ class SoapRunner extends WebRunner
 
     /**
      * {@inheritdoc}
+     * @throws \Exception
      */
     protected function run(Context $context, Job $job, Execution $execution)
     {
@@ -41,6 +42,11 @@ class SoapRunner extends WebRunner
         $this->wsdlPath = $this->loadWsdlPath($job);
         if ($request->query->has('wsdl')) {
             return $this->getWsdlResponse();
+        }
+
+        // Validate job configuration
+        if (!$this->validateConfig($job)) {
+            throw new \Exception('Invalid job configuration.');
         }
 
         // Init SOAP server
@@ -89,6 +95,20 @@ class SoapRunner extends WebRunner
         }
 
         return $response->send();
+    }
+
+    /**
+     * Validate config for $job
+     *
+     * @param Job $job
+     *
+     * @return bool
+     */
+    protected function validateConfig(Job $job)
+    {
+        // TODO: Implement validateConfig() method.
+
+        return true;
     }
 
     /**
