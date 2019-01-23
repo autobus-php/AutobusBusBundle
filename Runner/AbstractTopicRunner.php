@@ -30,7 +30,7 @@ abstract class AbstractTopicRunner extends AbstractRunner implements Processor
     /**
      * @var LoggerInterface
      */
-    private $logger;
+    protected $logger;
 
     /**
      * TopicRunner constructor.
