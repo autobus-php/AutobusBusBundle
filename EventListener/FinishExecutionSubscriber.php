@@ -3,6 +3,7 @@
 namespace Autobus\Bundle\BusBundle\EventListener;
 
 use Autobus\Bundle\BusBundle\Entity\WebJob;
+use Autobus\Bundle\BusBundle\Entity\TopicJob;
 use Autobus\Bundle\BusBundle\Event\RunnerEvents;
 use Autobus\Bundle\BusBundle\Event\RunnerHandleEvent;
 use Psr\Log\LoggerInterface;
@@ -47,7 +48,7 @@ class FinishExecutionSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-             RunnerEvents::AFTER_HANDLE => 'onAfterHandle'
+            RunnerEvents::AFTER_HANDLE => 'onAfterHandle',
         );
     }
 
@@ -61,7 +62,10 @@ class FinishExecutionSubscriber implements EventSubscriberInterface
 
         $execution->finish();
 
-        if ($job instanceof WebJob) {
+        if (
+            $job instanceof WebJob
+            || $job instanceof TopicJob
+        ) {
             if ($response->getStatusCode() >= 400) {
                 $execution->setState($execution::STATE_ERROR);
             }
@@ -76,17 +80,17 @@ class FinishExecutionSubscriber implements EventSubscriberInterface
                 $execution->setLogs(implode("\n", $logs));
 
                 $requestString = $request->headers->__toString();
-                $requestString .= "\n\n".$request->getContent();
+                $requestString .= "\n\n" . $request->getContent();
                 $execution->setRequest($requestString);
 
                 $responseString = sprintf("HTTP %d\n\n", $response->getStatusCode());
                 $responseString .= $response->headers->__toString();
-                $responseString .= "\n\n".$response->getContent();
+                $responseString .= "\n\n" . $response->getContent();
                 $execution->setResponse($responseString);
             }
 
             if ($request->getContentType() == 'xml') {
-                $response->setContent('<result><![CDATA['.$response->getContent().']]></result>');
+                $response->setContent('<result><![CDATA[' . $response->getContent() . ']]></result>');
             } elseif ($request->getContentType() == 'json') {
                 $response->setContent(sprintf('{"result":"%s"}', addslashes($response->getContent())));
             }
