@@ -53,4 +53,10 @@ services:
   bus.queue.writer:
     class: Autobus\Bundle\BusBundle\Queue\Writer
     arguments:
-    - '@enqueue.client.default.producer'
+      - '@enqueue.client.default.producer'
+
+  # Helper
+  bus.helper.job:
+    class: Autobus\Bundle\BusBundle\Helper\JobHelper
+    arguments:
+      - '@kernel'
