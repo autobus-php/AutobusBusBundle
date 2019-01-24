@@ -53,6 +53,13 @@ abstract class AbstractRunner implements RunnerInterface
 
         try {
             $this->eventDispatcher->dispatch(RunnerEvents::BEFORE_HANDLE, $event);
+
+            // Validate job configuration
+            if (!$this->validateConfig($job)) {
+                throw new \Exception('Invalid job configuration.');
+            }
+
+            // And run
             $this->run($context, $job, $execution);
             $execution->setState($execution::STATE_SUCCESS);
             $this->eventDispatcher->dispatch(RunnerEvents::SUCCESS, $event);
@@ -88,5 +95,19 @@ abstract class AbstractRunner implements RunnerInterface
         }
 
         return $context;
+    }
+
+    /**
+     * Validate config for $job
+     *
+     * @param Job $job
+     *
+     * @return bool
+     */
+    protected function validateConfig(Job $job)
+    {
+        // TODO: Implement validateConfig() method.
+
+        return true;
     }
 }

@@ -44,11 +44,6 @@ class SoapRunner extends WebRunner
             return $this->getWsdlResponse();
         }
 
-        // Validate job configuration
-        if (!$this->validateConfig($job)) {
-            throw new \Exception('Invalid job configuration.');
-        }
-
         // Init SOAP server
         $soapServer = new \SoapServer($this->wsdlPath);
         $soapAction = $this->getSoapAction();
@@ -95,20 +90,6 @@ class SoapRunner extends WebRunner
         }
 
         return $response->send();
-    }
-
-    /**
-     * Validate config for $job
-     *
-     * @param Job $job
-     *
-     * @return bool
-     */
-    protected function validateConfig(Job $job)
-    {
-        // TODO: Implement validateConfig() method.
-
-        return true;
     }
 
     /**
