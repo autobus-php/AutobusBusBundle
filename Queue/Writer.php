@@ -2,6 +2,7 @@
 
 namespace Autobus\Bundle\BusBundle\Queue;
 
+use Enqueue\Client\Message;
 use Enqueue\Client\TraceableProducer as Producer;
 
 /**
@@ -30,8 +31,8 @@ class Writer
     /**
      * Write $message to given $topic
      *
-     * @param string $topic
-     * @param string $message
+     * @param string         $topic
+     * @param string|Message $message
      *
      * @return void
      */
@@ -50,7 +51,9 @@ class Writer
      */
     public function writeAsArray($topic, $data)
     {
-        $message = json_encode($data);
+        $message = new Message(json_encode($data));
+        $message->setContentType('application/json');
+
         $this->write($topic, $message);
     }
 }
