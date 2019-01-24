@@ -56,8 +56,19 @@ class SoapRunner extends WebRunner
      */
     protected function run(Context $context, Job $job, Execution $execution)
     {
+        $request = $context->getRequest();
+
+        // Check method
+        if (
+            $request->getMethod() === 'GET'
+            && !$request->query->has('wsdl')
+        ) {
+            $execution->setMustBeSaved(false);
+
+            return $this->getBadRequestResponse();
+        }
+
         // If is a wsdl request
-        $request        = $context->getRequest();
         $this->wsdlPath = $this->loadWsdlPath($job);
         if ($request->query->has('wsdl')) {
             $execution->setMustBeSaved(false);
@@ -114,6 +125,20 @@ class SoapRunner extends WebRunner
             $response->headers->set('Content-Type', 'text/xml');
             $response->setContent($wsdlContent);
         }
+
+        return $response->send();
+    }
+
+    /**
+     * Get bad request response
+     *
+     * @return Response
+     */
+    protected function getBadRequestResponse()
+    {
+        $response = new Response();
+        $response->setStatusCode(400);
+        $response->setContent('Bad request');
 
         return $response->send();
     }
