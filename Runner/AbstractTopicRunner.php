@@ -63,7 +63,8 @@ abstract class AbstractTopicRunner extends AbstractRunner implements Processor
             $jobs               = $topicJobRepository->getByTopics($this->getTopics());
             foreach ($jobs as $job) {
                 $execution = new Execution();
-                $context   = $this->prepareContext($message);
+                $context   = new Context();
+                $context->setMessage($message->getBody());
                 $this->handle($context, $job, $execution);
                 $this->entityManager->persist($execution);
                 $this->entityManager->persist($job);
@@ -88,21 +89,4 @@ abstract class AbstractTopicRunner extends AbstractRunner implements Processor
      * @return array
      */
     abstract public function getTopics();
-
-    /**
-     * Prepare a new context instance
-     *
-     * @param Message $message
-     *
-     * @return Context
-     */
-    protected function prepareContext(Message $message)
-    {
-        $context = new Context();
-        $context->setRequest(new Request());
-        $context->setResponse(new Response());
-        $context->setMessage($message->getBody());
-
-        return $context;
-    }
 }
