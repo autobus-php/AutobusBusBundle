@@ -67,9 +67,17 @@ abstract class Execution implements ExecutionInterface
      */
     protected $startedAt;
 
+    /**
+     * Must be saved at end?
+     *
+     * @var bool
+     */
+    protected $mustBeSaved;
+
     public function __construct()
     {
-        $this->state = self::STATE_UNKNOWN;
+        $this->state       = self::STATE_UNKNOWN;
+        $this->mustBeSaved = true;
     }
 
     /**
@@ -256,5 +264,25 @@ abstract class Execution implements ExecutionInterface
     public function getLogs()
     {
         return $this->logs;
+    }
+
+    /**
+     * @return bool
+     */
+    public function mustBeSaved(): bool
+    {
+        return $this->mustBeSaved;
+    }
+
+    /**
+     * @param bool $mustBeSaved
+     *
+     * @return Execution
+     */
+    public function setMustBeSaved(bool $mustBeSaved): Execution
+    {
+        $this->mustBeSaved = $mustBeSaved;
+
+        return $this;
     }
 }
