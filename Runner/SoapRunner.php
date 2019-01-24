@@ -52,7 +52,11 @@ class SoapRunner extends WebRunner
         $response = new Response();
         $response->headers->set('Content-Type', 'text/xml; charset=UTF-8');
         ob_start();
-        $soapServer->handle();
+        try {
+            $soapServer->handle();
+        } catch (\SoapFault $fault) {
+            $soapServer->fault($fault->getCode(), $fault->getMessage());
+        }
         $response->setContent(ob_get_clean());
         $context->setResponse($response);
     }
