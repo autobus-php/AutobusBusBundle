@@ -55,6 +55,7 @@ class SoapRunner extends WebRunner
         $soapServer->handle();
         $response->setContent(ob_get_clean());
         $context->setResponse($response);
+        $context->setMessage($response->getContent());
     }
 
     /**
