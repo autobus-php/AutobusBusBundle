@@ -58,22 +58,12 @@ class SoapRunner extends WebRunner
     {
         $request = $context->getRequest();
 
-        // Check method
-        if (
-            $request->getMethod() === 'GET'
-            && !$request->query->has('wsdl')
-        ) {
-            $execution->setMustBeSaved(false);
-
-            return $this->getBadRequestResponse();
-        }
-
         // If is a wsdl request
         $this->wsdlPath = $this->loadWsdlPath($job);
-        if ($request->query->has('wsdl')) {
+        if ($request->getMethod() === 'GET') {
             $execution->setMustBeSaved(false);
 
-            return $this->getWsdlResponse();
+            return $request->query->has('wsdl') ? $this->getWsdlResponse() : $this->getBadRequestResponse();
         }
 
         // Init SOAP server

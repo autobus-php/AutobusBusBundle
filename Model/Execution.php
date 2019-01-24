@@ -269,7 +269,7 @@ abstract class Execution implements ExecutionInterface
     /**
      * @return bool
      */
-    public function isMustBeSaved(): bool
+    public function mustBeSaved(): bool
     {
         return $this->mustBeSaved;
     }

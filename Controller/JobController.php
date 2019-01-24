@@ -173,7 +173,7 @@ class JobController extends Controller
 
         $runner->handle($context, $job, $execution);
 
-        if ($execution->isMustBeSaved()) {
+        if ($execution->mustBeSaved()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($execution);
             $em->flush();
