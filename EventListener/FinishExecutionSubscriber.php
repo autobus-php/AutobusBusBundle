@@ -63,8 +63,8 @@ class FinishExecutionSubscriber implements EventSubscriberInterface
         $execution->finish();
 
         if (
-            $job instanceof WebJob
-            || $job instanceof TopicJob
+            $request !== null
+            && $response !== null
         ) {
             if ($response->getStatusCode() >= 400) {
                 $execution->setState($execution::STATE_ERROR);
