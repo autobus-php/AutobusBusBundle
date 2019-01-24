@@ -5,7 +5,9 @@ namespace Autobus\Bundle\BusBundle\Runner;
 use Autobus\Bundle\BusBundle\Context;
 use Autobus\Bundle\BusBundle\Entity\Job;
 use Autobus\Bundle\BusBundle\Entity\Execution;
+use Autobus\Bundle\BusBundle\Helper\JobHelper;
 use Autobus\Bundle\BusBundle\Soap\Action\SoapAction;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -25,11 +27,28 @@ class SoapRunner extends WebRunner
     const CONFIG_WSDL_PATH = 'wsdlPath';
 
     /**
+     * @var JobHelper
+     */
+    protected $jobHelper;
+
+    /**
      * Current wsdl path
      *
      * @var string
      */
     protected $wsdlPath;
+
+    /**
+     * SoapRunner constructor.
+     *
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param JobHelper                $jobHelper
+     */
+    public function __construct(EventDispatcherInterface $eventDispatcher, JobHelper $jobHelper)
+    {
+        parent::__construct($eventDispatcher);
+        $this->jobHelper = $jobHelper;
+    }
 
     /**
      * {@inheritdoc}
@@ -74,7 +93,7 @@ class SoapRunner extends WebRunner
         // Check for wsdl path in job configuration
         $config = $job->getConfigArray();
         if (array_key_exists(self::CONFIG_WSDL_PATH, $config)) {
-            return $config[self::CONFIG_WSDL_PATH];
+            return $this->jobHelper->getPathFromRoot($config[self::CONFIG_WSDL_PATH]);
         }
 
         return null;
