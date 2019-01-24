@@ -60,6 +60,8 @@ class SoapRunner extends WebRunner
         $request        = $context->getRequest();
         $this->wsdlPath = $this->loadWsdlPath($job);
         if ($request->query->has('wsdl')) {
+            $execution->setMustBeSaved(false);
+
             return $this->getWsdlResponse();
         }
 
