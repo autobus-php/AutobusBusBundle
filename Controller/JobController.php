@@ -61,6 +61,7 @@ class JobController extends AbstractController
 
         $job      = $jobFactory->create($type);
         $formType = $jobTypeFactory->create($job);
+        // TODO : update here to pass services data instead of instances (ids and labels)
         $form     = $this->createForm(
             get_class($formType),
             $job,
@@ -120,7 +121,6 @@ class JobController extends AbstractController
     {
         $deleteForm = $this->createDeleteForm($job);
         $formType = $this->get('bus.form.job.factory')->create($job);
-        // TODO : update here to pass services data instead of instances (ids and labels)
         $editForm = $this->createForm(
             get_class($formType),
             $job,
