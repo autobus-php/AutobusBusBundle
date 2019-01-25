@@ -1,9 +1,21 @@
 services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  # Controllers
+  Autobus\Bundle\BusBundle\Controller\:
+    resource: '../../Controller'
+    bind:
+      $jobFactory: '@bus.job.factory'
+      $jobTypeFactory: '@bus.form.job.factory'
+
+  # Services
   Autobus\Bundle\BusBundle\Runner\RunnerChain: ~
 
   form.type.service:
     class: Autobus\Bundle\BusBundle\Form\JobType
-    arguments: ['@Autobus\Bundle\BusBundle\Runner\RunnerChain']
     tags: ['form.type']
 
   bus.job.factory:
@@ -11,6 +23,7 @@ services:
 
   bus.form.job.factory:
     class: Autobus\Bundle\BusBundle\Form\JobTypeFactory
+    arguments: [!tagged bus.runner]
 
   bus.event_listener.start_execution:
     class: Autobus\Bundle\BusBundle\EventListener\StartExecutionSubscriber

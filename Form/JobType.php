@@ -8,6 +8,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class JobType extends AbstractType
 {
@@ -16,23 +17,21 @@ class JobType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $runnerChain = $options['runner_chain'];
-
         $runnerClasses = [];
-        foreach ($runnerChain->getRunners() as $sid => $runner) {
-            $runnerClasses[$sid] = $runner['label'];
+        foreach ($options['runners'] as $runner) {
+            $runnerClasses[] = get_class($runner);
         }
 
         $builder
-          ->add('name')
-          ->add('runner', ChoiceType::class, ['choices' => array_flip($runnerClasses)])
-          ->add(
-              'group',
-              EntityType::class,
-              ['placeholder' => 'Choose ...', 'required' => false, 'class' => JobGroup::class]
-          )
-          ->add('trace')
-          ->add('config');
+            ->add('name')
+            ->add('runner', ChoiceType::class, ['choices' => array_flip($runnerClasses)])
+            ->add(
+                'group',
+                EntityType::class,
+                ['placeholder' => 'Choose ...', 'required' => false, 'class' => JobGroup::class]
+            )
+            ->add('trace')
+            ->add('config');
     }
 
     /**
@@ -40,7 +39,7 @@ class JobType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setRequired('runner_chain');
+        $resolver->setRequired('runners');
     }
 
     /**

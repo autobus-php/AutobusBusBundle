@@ -5,19 +5,23 @@ namespace Autobus\Bundle\BusBundle\Controller;
 use Autobus\Bundle\BusBundle\Context;
 use Autobus\Bundle\BusBundle\Entity\Execution;
 use Autobus\Bundle\BusBundle\Entity\Job;
+use Autobus\Bundle\BusBundle\Entity\JobFactory;
 use Autobus\Bundle\BusBundle\Entity\WebJob;
+use Autobus\Bundle\BusBundle\Form\JobTypeFactory;
 use Autobus\Bundle\BusBundle\Repository\ExecutionRepository;
 use Autobus\Bundle\BusBundle\Runner\RunnerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 /**
- * Job controller.
+ * Class JobController
  *
+ * @author  Simon CARRE <simon.carre@clickandmortar.fr>
+ * @package Autobus\Bundle\BusBundle\Controller
  */
-class JobController extends Controller
+class JobController extends AbstractController
 {
     /**
      * Executions per page on job show
@@ -44,20 +48,23 @@ class JobController extends Controller
     /**
      * Creates a new service entity.
      *
+     * @param Request        $request
+     * @param JobFactory     $jobFactory
+     * @param JobTypeFactory $jobTypeFactory
      */
-    public function newAction(Request $request)
+    public function newAction(Request $request, JobFactory $jobFactory, JobTypeFactory $jobTypeFactory)
     {
         $type = $request->get('job_type', '');
         if (empty($type)) {
             return $this->render('AutobusBusBundle::job/new.html.twig', []);
         }
 
-        $job = $this->get('bus.job.factory')->create($type);
-        $formType = $this->get('bus.form.job.factory')->create($job);
-        $form = $this->createForm(
+        $job      = $jobFactory->create($type);
+        $formType = $jobTypeFactory->create($job);
+        $form     = $this->createForm(
             get_class($formType),
             $job,
-            ['runner_chain' => $this->get('Autobus\Bundle\BusBundle\Runner\RunnerChain')]
+            ['runners' => $jobTypeFactory->getRunners()]
         );
         $form->handleRequest($request);
 
@@ -113,6 +120,7 @@ class JobController extends Controller
     {
         $deleteForm = $this->createDeleteForm($job);
         $formType = $this->get('bus.form.job.factory')->create($job);
+        // TODO : update here to pass services data instead of instances (ids and labels)
         $editForm = $this->createForm(
             get_class($formType),
             $job,
