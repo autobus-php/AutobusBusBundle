@@ -20,13 +20,6 @@ use Symfony\Component\HttpFoundation\Response;
 class SoapRunner extends WebRunner
 {
     /**
-     * Wsdl path key in job config array
-     *
-     * @var string
-     */
-    const CONFIG_WSDL_PATH = 'wsdlPath';
-
-    /**
      * @var JobHelper
      */
     protected $jobHelper;
@@ -59,7 +52,7 @@ class SoapRunner extends WebRunner
         $request = $context->getRequest();
 
         // If is a wsdl request
-        $this->wsdlPath = $this->loadWsdlPath($job);
+        $this->wsdlPath = $this->jobHelper->loadWsdlPath($job);
         if ($request->getMethod() === 'GET') {
             $execution->setMustBeSaved(false);
             $response = $request->query->has('wsdl') ? $this->getWsdlResponse() : $this->getBadRequestResponse();
@@ -84,24 +77,6 @@ class SoapRunner extends WebRunner
         $response->setContent(ob_get_clean());
         $context->setResponse($response);
         $context->setMessage($response->getContent());
-    }
-
-    /**
-     * Load wsdl path from job parameter
-     *
-     * @param Job $job
-     *
-     * @return string
-     */
-    protected function loadWsdlPath(Job $job)
-    {
-        // Check for wsdl path in job configuration
-        $config = $job->getConfigArray();
-        if (array_key_exists(self::CONFIG_WSDL_PATH, $config)) {
-            return $this->jobHelper->getPathFromRoot($config[self::CONFIG_WSDL_PATH]);
-        }
-
-        return null;
     }
 
     /**
