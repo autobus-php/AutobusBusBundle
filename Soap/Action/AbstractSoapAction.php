@@ -2,6 +2,8 @@
 
 namespace Autobus\Bundle\BusBundle\Soap\Action;
 
+use Autobus\Bundle\BusBundle\Context;
+use Autobus\Bundle\BusBundle\Entity\Execution;
 use Autobus\Bundle\BusBundle\Entity\Job;
 use Psr\Log\LoggerInterface;
 
@@ -19,9 +21,19 @@ abstract class AbstractSoapAction
     protected $logger;
 
     /**
+     * @var Context
+     */
+    protected $context;
+
+    /**
      * @var Job
      */
     protected $job;
+
+    /**
+     * @var Execution
+     */
+    protected $execution;
 
     /**
      * SoapAction constructor.
@@ -44,6 +56,26 @@ abstract class AbstractSoapAction
     }
 
     /**
+     * @return Context
+     */
+    public function getContext()
+    {
+        return $this->context;
+    }
+
+    /**
+     * @param Context $context
+     *
+     * @return AbstractSoapAction
+     */
+    public function setContext(Context $context)
+    {
+        $this->context = $context;
+
+        return $this;
+    }
+
+    /**
      * @return Job
      */
     public function getJob()
@@ -59,6 +91,26 @@ abstract class AbstractSoapAction
     public function setJob(Job $job)
     {
         $this->job = $job;
+
+        return $this;
+    }
+
+    /**
+     * @return Execution
+     */
+    public function getExecution()
+    {
+        return $this->execution;
+    }
+
+    /**
+     * @param Execution $execution
+     *
+     * @return AbstractSoapAction
+     */
+    public function setExecution(Execution $execution)
+    {
+        $this->execution = $execution;
 
         return $this;
     }

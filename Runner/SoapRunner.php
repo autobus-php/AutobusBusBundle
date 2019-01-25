@@ -6,7 +6,7 @@ use Autobus\Bundle\BusBundle\Context;
 use Autobus\Bundle\BusBundle\Entity\Job;
 use Autobus\Bundle\BusBundle\Entity\Execution;
 use Autobus\Bundle\BusBundle\Helper\JobHelper;
-use Autobus\Bundle\BusBundle\Soap\Action\SoapAction;
+use Autobus\Bundle\BusBundle\Soap\Action\AbstractSoapAction;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -71,7 +71,9 @@ class SoapRunner extends WebRunner
         // Init SOAP server
         $soapServer = new \SoapServer($this->wsdlPath);
         $soapAction = $this->getSoapAction();
+        $soapAction->setContext($context);
         $soapAction->setJob($job);
+        $soapAction->setExecution($execution);
         $soapServer->setObject($soapAction);
         $response = new Response();
         $response->headers->set('Content-Type', 'text/xml; charset=UTF-8');
@@ -138,7 +140,7 @@ class SoapRunner extends WebRunner
     /**
      * Return SOAP action
      *
-     * @return SoapAction
+     * @return AbstractSoapAction
      */
     protected function getSoapAction()
     {

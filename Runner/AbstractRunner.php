@@ -61,7 +61,11 @@ abstract class AbstractRunner implements RunnerInterface
 
             // And run
             $this->run($context, $job, $execution);
-            $execution->setState($execution::STATE_SUCCESS);
+
+            // Define execution state
+            if ($execution->getState() === Execution::STATE_UNKNOWN) {
+                $execution->setState($execution::STATE_SUCCESS);
+            }
             $this->eventDispatcher->dispatch(RunnerEvents::SUCCESS, $event);
         } catch (\Exception $exception) {
             $this->eventDispatcher->dispatch(
