@@ -18,13 +18,16 @@ class RunnerCompilerPass implements CompilerPassInterface
             return;
         }
 
-        $definition = $container->findDefinition(RunnerChain::class);
-
+        $definition     = $container->findDefinition(RunnerChain::class);
         $taggedServices = $container->findTaggedServiceIds('bus.runner');
 
         foreach ($taggedServices as $id => $tags) {
             foreach ($tags as $attributes) {
-                $definition->addMethodCall('addRunner', array(new Reference($id), $id, $attributes['label']));
+                $definition->addMethodCall('addRunner', [new Reference($id), $id, $attributes['label']]);
+
+                // Set service as public
+                $serviceDefinition = $container->getDefinition($id);
+                $serviceDefinition->setPublic(true)->setPrivate(false);
             }
         }
     }
