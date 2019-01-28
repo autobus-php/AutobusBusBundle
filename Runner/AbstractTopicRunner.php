@@ -5,7 +5,7 @@ namespace Autobus\Bundle\BusBundle\Runner;
 use Autobus\Bundle\BusBundle\Context;
 use Autobus\Bundle\BusBundle\Entity\Execution;
 use Autobus\Bundle\BusBundle\Repository\TopicJobRepository;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Interop\Queue\Message;
 use Interop\Queue\Context as EnqueueContext;
@@ -23,7 +23,7 @@ use Symfony\Component\HttpFoundation\Response;
 abstract class AbstractTopicRunner extends AbstractRunner implements Processor
 {
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     protected $entityManager;
 
@@ -36,10 +36,10 @@ abstract class AbstractTopicRunner extends AbstractRunner implements Processor
      * TopicRunner constructor.
      *
      * @param EventDispatcherInterface $eventDispatcher
-     * @param EntityManager            $entityManager
+     * @param EntityManagerInterface   $entityManager
      * @param LoggerInterface          $logger
      */
-    public function __construct(EventDispatcherInterface $eventDispatcher, EntityManager $entityManager, LoggerInterface $logger)
+    public function __construct(EventDispatcherInterface $eventDispatcher, EntityManagerInterface $entityManager, LoggerInterface $logger)
     {
         parent::__construct($eventDispatcher);
         $this->entityManager = $entityManager;

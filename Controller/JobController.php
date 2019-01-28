@@ -10,6 +10,7 @@ use Autobus\Bundle\BusBundle\Entity\WebJob;
 use Autobus\Bundle\BusBundle\Form\JobTypeFactory;
 use Autobus\Bundle\BusBundle\Repository\ExecutionRepository;
 use Autobus\Bundle\BusBundle\Runner\RunnerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -61,11 +62,16 @@ class JobController extends AbstractController
 
         $job      = $jobFactory->create($type);
         $formType = $jobTypeFactory->create($job);
-        // TODO : update here to pass services data instead of instances (ids and labels)
-        $form     = $this->createForm(
+        $runnerClasses = [];
+
+        foreach ($jobTypeFactory->getRunners() as $runner) {
+            $runnerClasses[] = get_class($runner);
+        }
+
+        $form = $this->createForm(
             get_class($formType),
             $job,
-            ['runners' => $jobTypeFactory->getRunners()]
+            ['runners' => array_flip($runnerClasses)]
         );
         $form->handleRequest($request);
 
@@ -88,10 +94,11 @@ class JobController extends AbstractController
      *
      * @param Job $job
      * @param int $page
+     * @param PaginatorInterface $paginator
      *
      * @return Response
      */
-    public function showAction(Job $job, $page)
+    public function showAction(Job $job, $page, PaginatorInterface $paginator)
     {
         $deleteForm = $this->createDeleteForm($job);
 
@@ -99,7 +106,6 @@ class JobController extends AbstractController
         /** @var ExecutionRepository $executionRepository */
         $executionRepository = $em->getRepository('AutobusBusBundle:Execution');
         $executionsQuery     = $executionRepository->getQueryByJob($job);
-        $paginator           = $this->get('knp_paginator');
         $executions          = $paginator->paginate(
             $executionsQuery,
             $page,
@@ -117,14 +123,20 @@ class JobController extends AbstractController
      * Displays a form to edit an existing service entity.
      *
      */
-    public function editAction(Request $request, Job $job)
+    public function editAction(Request $request, Job $job, JobTypeFactory $jobTypeFactory)
     {
         $deleteForm = $this->createDeleteForm($job);
-        $formType = $this->get('bus.form.job.factory')->create($job);
+        $formType = $jobTypeFactory->create($job);
+        $runnerClasses = [];
+
+        foreach ($jobTypeFactory->getRunners() as $runner) {
+            $runnerClasses[] = get_class($runner);
+        }
+
         $editForm = $this->createForm(
             get_class($formType),
             $job,
-            ['runner_chain' => $this->get('Autobus\Bundle\BusBundle\Runner\RunnerChain')]
+            ['runners' => array_flip($runnerClasses)]
         );
         $editForm->handleRequest($request);
 
@@ -163,20 +175,20 @@ class JobController extends AbstractController
 
     /**
      * @param Request $request
-     * @param WebJob     $job
+     * @param WebJob $job
+     * @param Execution $execution
+     * @param Context $context
      *
      * @ParamConverter(converter="bus_job_converter", class="Autobus\Bundle\BusBundle\Entity\WebJob")
      * @return Response
      */
-    public function executeAction(Request $request, WebJob $job)
+    public function executeAction(Request $request, WebJob $job, Execution $execution, Context $context)
     {
         $runnerServiceId = $job->getRunner();
         /** @var RunnerInterface $runner */
         $runner = $this->get($runnerServiceId);
 
         $response = new Response();
-        $execution = new Execution();
-        $context = new Context();
         $context->setRequest($request)->setResponse($response);
 
         $runner->handle($context, $job, $execution);

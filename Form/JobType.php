@@ -17,14 +17,9 @@ class JobType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $runnerClasses = [];
-        foreach ($options['runners'] as $runner) {
-            $runnerClasses[] = get_class($runner);
-        }
-
         $builder
             ->add('name')
-            ->add('runner', ChoiceType::class, ['choices' => array_flip($runnerClasses)])
+            ->add('runner', ChoiceType::class, ['choices' => $options['runners']])
             ->add(
                 'group',
                 EntityType::class,
