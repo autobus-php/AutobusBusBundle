@@ -34,9 +34,9 @@ class WebJob extends Job implements WebJobInterface
      * @var string
      *
      * @Assert\NotBlank()
-     * @Assert\Length(max=255)
+     * @Assert\Length(max=200)
      *
-     * @ORM\Column(type="string", unique=true, length=255)
+     * @ORM\Column(type="string", unique=true, length=200)
      */
     protected $path;
 
