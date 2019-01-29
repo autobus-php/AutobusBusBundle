@@ -11,7 +11,7 @@ use Autobus\Bundle\BusBundle\Form\JobTypeFactory;
 use Autobus\Bundle\BusBundle\Repository\ExecutionRepository;
 use Autobus\Bundle\BusBundle\Runner\RunnerInterface;
 use Knp\Component\Pager\PaginatorInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -22,7 +22,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
  * @author  Simon CARRE <simon.carre@clickandmortar.fr>
  * @package Autobus\Bundle\BusBundle\Controller
  */
-class JobController extends AbstractController
+class JobController extends Controller
 {
     /**
      * Executions per page on job show
@@ -163,20 +163,20 @@ class JobController extends AbstractController
 
     /**
      * @param Request $request
-     * @param WebJob $job
-     * @param Execution $execution
-     * @param Context $context
+     * @param WebJob  $job
      *
      * @ParamConverter(converter="bus_job_converter", class="Autobus\Bundle\BusBundle\Entity\WebJob")
      * @return Response
      */
-    public function executeAction(Request $request, WebJob $job, Execution $execution, Context $context)
+    public function executeAction(Request $request, WebJob $job)
     {
         $runnerServiceId = $job->getRunner();
         /** @var RunnerInterface $runner */
         $runner = $this->get($runnerServiceId);
 
         $response = new Response();
+        $execution = new Execution();
+        $context = new Context();
         $context->setRequest($request)->setResponse($response);
 
         $runner->handle($context, $job, $execution);
