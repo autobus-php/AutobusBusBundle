@@ -121,16 +121,10 @@ class JobController extends AbstractController
     {
         $deleteForm = $this->createDeleteForm($job);
         $formType = $jobTypeFactory->create($job);
-        $runnerClasses = [];
-
-        foreach ($jobTypeFactory->getRunners() as $runner) {
-            $runnerClasses[] = get_class($runner);
-        }
 
         $editForm = $this->createForm(
             get_class($formType),
-            $job,
-            ['runners' => array_flip($runnerClasses)]
+            $job
         );
         $editForm->handleRequest($request);
 
