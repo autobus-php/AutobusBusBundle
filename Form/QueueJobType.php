@@ -30,4 +30,14 @@ class QueueJobType extends JobType
             )
         );
     }
+
+    /**
+     * @param string $type
+     *
+     * @return bool
+     */
+    public function supports(string $type): bool
+    {
+        return $type == 'queue';
+    }
 }

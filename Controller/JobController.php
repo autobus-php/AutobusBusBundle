@@ -62,16 +62,10 @@ class JobController extends AbstractController
 
         $job      = $jobFactory->create($type);
         $formType = $jobTypeFactory->create($job);
-        $runnerClasses = [];
-
-        foreach ($jobTypeFactory->getRunners() as $runner) {
-            $runnerClasses[] = get_class($runner);
-        }
 
         $form = $this->createForm(
             get_class($formType),
-            $job,
-            ['runners' => array_flip($runnerClasses)]
+            $job
         );
         $form->handleRequest($request);
 

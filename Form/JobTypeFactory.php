@@ -3,9 +3,6 @@
 namespace Autobus\Bundle\BusBundle\Form;
 
 use Autobus\Bundle\BusBundle\Entity\Job;
-use Autobus\Bundle\BusBundle\Runner\RunnerInterface;
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Job type factory
@@ -13,18 +10,18 @@ use Symfony\Component\Validator\Constraints as Assert;
 class JobTypeFactory
 {
     /**
-     * @var RunnerInterface[]
+     * @var JobTypeCollection
      */
-    protected $runners;
+    protected $jobTypeCollection;
 
     /**
      * JobTypeFactory constructor.
      *
-     * @param iterable $runners
+     * @param JobTypeCollection $jobTypeCollection
      */
-    public function __construct(iterable $runners)
+    public function __construct(JobTypeCollection $jobTypeCollection)
     {
-        $this->runners   = $runners;
+        $this->jobTypeCollection = $jobTypeCollection;
     }
 
     /**
@@ -32,38 +29,14 @@ class JobTypeFactory
      *
      * @param Job $job
      *
-     * @return JobType
+     * @return JobTypeInterface
+     *
      * @throws \Exception
      */
     public function create(Job $job)
     {
-        $type      = $job->getType();
-        $className = '\\Autobus\Bundle\BusBundle\\Form\\' . ucfirst(strtolower($type)) . 'JobType';
+        $type = $job->getType();
 
-        if (!class_exists($className)) {
-            throw new \Exception(sprintf('%s does not exist', $className));
-        }
-
-        return new $className;
-    }
-
-    /**
-     * @return RunnerInterface[]
-     */
-    public function getRunners()
-    {
-        return $this->runners;
-    }
-
-    /**
-     * @param RunnerInterface[] $runners
-     *
-     * @return JobTypeFactory
-     */
-    public function setRunners($runners)
-    {
-        $this->runners = $runners;
-
-        return $this;
+        return $this->jobTypeCollection->getJobType($type);
     }
 }

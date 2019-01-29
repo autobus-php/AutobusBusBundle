@@ -12,4 +12,14 @@ class WebRunner extends AbstractRunner
     {
         // TODO: Implement run() method.
     }
+
+    /**
+     * @param string $type
+     *
+     * @return bool
+     */
+    public function supports(string $type): bool
+    {
+        throw new \LogicException(__METHOD__ . ' : Supports function should be implemented in child classes.');
+    }
 }

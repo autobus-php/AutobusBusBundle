@@ -144,4 +144,14 @@ class SoapRunner extends WebRunner
     {
         // TODO: Implement getSoapAction() method.
     }
+
+    /**
+     * @param string $type
+     *
+     * @return bool
+     */
+    public function supports(string $type): bool
+    {
+        throw new \LogicException(__METHOD__ . ' : "supports" function should be implemented in child classes.');
+    }
 }

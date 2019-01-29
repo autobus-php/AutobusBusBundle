@@ -3,6 +3,7 @@
 namespace Autobus\Bundle\BusBundle\Form;
 
 use Autobus\Bundle\BusBundle\Entity\JobGroup;
+use Autobus\Bundle\BusBundle\Runner\RunnerCollection;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -10,16 +11,27 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class JobType extends AbstractType
+class JobType extends AbstractType implements JobTypeInterface
 {
+    /**
+     * @var RunnerCollection
+     */
+    protected $runnerCollection;
+
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $job = $options['data'];
+        $runners = $this->runnerCollection->getRunners($job->getType());
+        $availableRunners = [];
+        foreach ($runners as $runner) {
+            $availableRunners[] = get_class($runner);
+        }
         $builder
             ->add('name')
-            ->add('runner', ChoiceType::class, ['choices' => $options['runners']])
+            ->add('runner', ChoiceType::class, ['choices' => array_flip($availableRunners)])
             ->add(
                 'group',
                 EntityType::class,
@@ -30,11 +42,13 @@ class JobType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
+     * @param RunnerCollection $runnerCollection
+     *
+     * @required
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function setRunnerCollection(RunnerCollection $runnerCollection)
     {
-        $resolver->setRequired('runners');
+        $this->runnerCollection = $runnerCollection;
     }
 
     /**
@@ -43,5 +57,15 @@ class JobType extends AbstractType
     public function getBlockPrefix()
     {
         return 'AutobusBusBundle_job';
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return bool
+     */
+    public function supports(string $type): bool
+    {
+        return false;
     }
 }

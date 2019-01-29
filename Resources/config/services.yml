@@ -13,17 +13,45 @@ services:
 
   # Services
   Autobus\Bundle\BusBundle\Runner\RunnerChain: ~
+  Autobus\Bundle\BusBundle\Runner\RunnerCollection: '@bus.runner.runnercollection'
+
+  bus.runner.runnercollection:
+    class: Autobus\Bundle\BusBundle\Runner\RunnerCollection
+    arguments: [!tagged bus.runner]
+    public: true
 
   form.type.service:
     class: Autobus\Bundle\BusBundle\Form\JobType
     tags: ['form.type']
+
+  bus.form.type.cron_job:
+    class: Autobus\Bundle\BusBundle\Form\CronJobType
+    tags: ['bus.job_type']
+
+  bus.form.type.queue_job:
+    class: Autobus\Bundle\BusBundle\Form\QueueJobType
+    tags: ['bus.job_type']
+
+  bus.form.type.topic_job:
+    class: Autobus\Bundle\BusBundle\Form\TopicJobType
+    tags: ['bus.job_type']
+
+  bus.form.type.web_job:
+    class: Autobus\Bundle\BusBundle\Form\WebJobType
+    tags: ['bus.job_type']
+
+  bus.form.type.jobtypecollection:
+    class: Autobus\Bundle\BusBundle\Form\JobTypeCollection
+    arguments: [!tagged bus.job_type]
+    public: true
 
   bus.job.factory:
     class: Autobus\Bundle\BusBundle\Entity\JobFactory
 
   bus.form.job.factory:
     class: Autobus\Bundle\BusBundle\Form\JobTypeFactory
-    arguments: [!tagged bus.runner]
+    arguments:
+    - '@bus.form.type.jobtypecollection'
 
   bus.event_listener.start_execution:
     class: Autobus\Bundle\BusBundle\EventListener\StartExecutionSubscriber
