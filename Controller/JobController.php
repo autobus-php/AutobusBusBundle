@@ -5,19 +5,24 @@ namespace Autobus\Bundle\BusBundle\Controller;
 use Autobus\Bundle\BusBundle\Context;
 use Autobus\Bundle\BusBundle\Entity\Execution;
 use Autobus\Bundle\BusBundle\Entity\Job;
+use Autobus\Bundle\BusBundle\Entity\JobFactory;
 use Autobus\Bundle\BusBundle\Entity\WebJob;
+use Autobus\Bundle\BusBundle\Form\JobTypeFactory;
 use Autobus\Bundle\BusBundle\Repository\ExecutionRepository;
 use Autobus\Bundle\BusBundle\Runner\RunnerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 /**
- * Job controller.
+ * Class JobController
  *
+ * @author  Simon CARRE <simon.carre@clickandmortar.fr>
+ * @package Autobus\Bundle\BusBundle\Controller
  */
-class JobController extends Controller
+class JobController extends AbstractController
 {
     /**
      * Executions per page on job show
@@ -44,20 +49,23 @@ class JobController extends Controller
     /**
      * Creates a new service entity.
      *
+     * @param Request        $request
+     * @param JobFactory     $jobFactory
+     * @param JobTypeFactory $jobTypeFactory
      */
-    public function newAction(Request $request)
+    public function newAction(Request $request, JobFactory $jobFactory, JobTypeFactory $jobTypeFactory)
     {
         $type = $request->get('job_type', '');
         if (empty($type)) {
             return $this->render('AutobusBusBundle::job/new.html.twig', []);
         }
 
-        $job = $this->get('bus.job.factory')->create($type);
-        $formType = $this->get('bus.form.job.factory')->create($job);
+        $job      = $jobFactory->create($type);
+        $formType = $jobTypeFactory->create($job);
+
         $form = $this->createForm(
             get_class($formType),
-            $job,
-            ['runner_chain' => $this->get('Autobus\Bundle\BusBundle\Runner\RunnerChain')]
+            $job
         );
         $form->handleRequest($request);
 
@@ -80,10 +88,11 @@ class JobController extends Controller
      *
      * @param Job $job
      * @param int $page
+     * @param PaginatorInterface $paginator
      *
      * @return Response
      */
-    public function showAction(Job $job, $page)
+    public function showAction(Job $job, $page, PaginatorInterface $paginator)
     {
         $deleteForm = $this->createDeleteForm($job);
 
@@ -91,7 +100,6 @@ class JobController extends Controller
         /** @var ExecutionRepository $executionRepository */
         $executionRepository = $em->getRepository('AutobusBusBundle:Execution');
         $executionsQuery     = $executionRepository->getQueryByJob($job);
-        $paginator           = $this->get('knp_paginator');
         $executions          = $paginator->paginate(
             $executionsQuery,
             $page,
@@ -109,14 +117,20 @@ class JobController extends Controller
      * Displays a form to edit an existing service entity.
      *
      */
-    public function editAction(Request $request, Job $job)
+    public function editAction(Request $request, Job $job, JobTypeFactory $jobTypeFactory)
     {
         $deleteForm = $this->createDeleteForm($job);
-        $formType = $this->get('bus.form.job.factory')->create($job);
+        $formType = $jobTypeFactory->create($job);
+        $runnerClasses = [];
+
+        foreach ($jobTypeFactory->getRunners() as $runner) {
+            $runnerClasses[] = get_class($runner);
+        }
+
         $editForm = $this->createForm(
             get_class($formType),
             $job,
-            ['runner_chain' => $this->get('Autobus\Bundle\BusBundle\Runner\RunnerChain')]
+            ['runners' => array_flip($runnerClasses)]
         );
         $editForm->handleRequest($request);
 
@@ -155,20 +169,20 @@ class JobController extends Controller
 
     /**
      * @param Request $request
-     * @param WebJob     $job
+     * @param WebJob $job
+     * @param Execution $execution
+     * @param Context $context
      *
      * @ParamConverter(converter="bus_job_converter", class="Autobus\Bundle\BusBundle\Entity\WebJob")
      * @return Response
      */
-    public function executeAction(Request $request, WebJob $job)
+    public function executeAction(Request $request, WebJob $job, Execution $execution, Context $context)
     {
         $runnerServiceId = $job->getRunner();
         /** @var RunnerInterface $runner */
         $runner = $this->get($runnerServiceId);
 
         $response = new Response();
-        $execution = new Execution();
-        $context = new Context();
         $context->setRequest($request)->setResponse($response);
 
         $runner->handle($context, $job, $execution);

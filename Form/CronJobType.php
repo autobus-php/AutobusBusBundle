@@ -28,8 +28,18 @@ class CronJobType extends JobType
 
         $resolver->setDefaults(
             array(
-            'data_class' => 'Autobus\Bundle\BusBundle\Entity\CronJob',
+                'data_class' => 'Autobus\Bundle\BusBundle\Entity\CronJob',
             )
         );
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return bool
+     */
+    public function supports(string $type): bool
+    {
+        return $type == 'cron';
     }
 }

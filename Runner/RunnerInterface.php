@@ -16,4 +16,11 @@ interface RunnerInterface
      * @return Context
      */
     public function handle(Context $context, Job $job, Execution $execution);
+
+    /**
+     * @param string $type
+     *
+     * @return bool
+     */
+    public function supports(string $type): bool;
 }
