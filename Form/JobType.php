@@ -27,11 +27,11 @@ class JobType extends AbstractType implements JobTypeInterface
         $runners = $this->runnerCollection->getRunners($job->getType());
         $availableRunners = [];
         foreach ($runners as $runner) {
-            $availableRunners[] = get_class($runner);
+            $availableRunners[get_class($runner)] = get_class($runner);
         }
         $builder
             ->add('name')
-            ->add('runner', ChoiceType::class, ['choices' => array_flip($availableRunners)])
+            ->add('runner', ChoiceType::class, ['choices' => $availableRunners])
             ->add(
                 'group',
                 EntityType::class,
