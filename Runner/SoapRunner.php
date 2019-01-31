@@ -20,6 +20,13 @@ use Symfony\Component\HttpFoundation\Response;
 class SoapRunner extends WebRunner
 {
     /**
+     * Wsdl placeholder for the service location
+     *
+     * @var string
+     */
+    const HOSTNAME_PLACEHOLDER = '{HOSTNAME_PLACEHOLDER}';
+
+    /**
      * @var JobHelper
      */
     protected $jobHelper;
@@ -57,7 +64,8 @@ class SoapRunner extends WebRunner
         );
         if ($request->getMethod() === 'GET') {
             $execution->setMustBeSaved(false);
-            $response = $request->query->has('wsdl') ? $this->getWsdlResponse() : $this->getBadRequestResponse();
+            $currentHostname = $request->getSchemeAndHttpHost();
+            $response = $request->query->has('wsdl') ? $this->getWsdlResponse($currentHostname) : $this->getBadRequestResponse();
             $context->setResponse($response);
 
             return $response;
@@ -84,13 +92,16 @@ class SoapRunner extends WebRunner
     /**
      * Get wsdl response
      *
+     * @param string $currentHostname
+     *
      * @return Response
      */
-    protected function getWsdlResponse()
+    protected function getWsdlResponse(string $currentHostname)
     {
         $response    = new Response();
         $wsdlContent = file_get_contents($this->wsdlPath);
         if ($wsdlContent !== false) {
+            $wsdlContent = str_replace(self::HOSTNAME_PLACEHOLDER, $currentHostname, $wsdlContent);
             $response->headers->set('Content-Type', 'text/xml');
             $response->setContent($wsdlContent);
         }
