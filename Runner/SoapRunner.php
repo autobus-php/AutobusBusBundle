@@ -24,7 +24,7 @@ class SoapRunner extends WebRunner
      *
      * @var string
      */
-    const AUTOBUS_HOSTNAME = '{AUTOBUS_HOSTNAME}';
+    const HOSTNAME_PLACEHOLDER = '{HOSTNAME_PLACEHOLDER}';
 
     /**
      * @var JobHelper
@@ -101,7 +101,7 @@ class SoapRunner extends WebRunner
         $response    = new Response();
         $wsdlContent = file_get_contents($this->wsdlPath);
         if ($wsdlContent !== false) {
-            $wsdlContent = str_replace(self::AUTOBUS_HOSTNAME, $currentHostname, $wsdlContent);
+            $wsdlContent = str_replace(self::HOSTNAME_PLACEHOLDER, $currentHostname, $wsdlContent);
             $response->headers->set('Content-Type', 'text/xml');
             $response->setContent($wsdlContent);
         }
