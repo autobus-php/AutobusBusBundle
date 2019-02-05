@@ -79,3 +79,8 @@ services:
   Autobus\Bundle\BusBundle\Helper\JobHelper:
     arguments:
       - '@kernel'
+
+  # Command
+  Autobus\Bundle\BusBundle\Command\AutobusCronRunCommand:
+    tags:
+    - { name: console.command }
