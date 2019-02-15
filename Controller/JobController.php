@@ -9,6 +9,7 @@ use Autobus\Bundle\BusBundle\Entity\JobFactory;
 use Autobus\Bundle\BusBundle\Entity\WebJob;
 use Autobus\Bundle\BusBundle\Form\JobTypeFactory;
 use Autobus\Bundle\BusBundle\Repository\ExecutionRepository;
+use Autobus\Bundle\BusBundle\Runner\RunnerCollection;
 use Autobus\Bundle\BusBundle\Runner\RunnerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -117,8 +118,16 @@ class JobController extends Controller
      * Displays a form to edit an existing service entity.
      *
      */
-    public function editAction(Request $request, Job $job, JobTypeFactory $jobTypeFactory)
+    public function editAction(Request $request, Job $job, JobTypeFactory $jobTypeFactory, RunnerCollection $runnerCollection)
     {
+        $runners = $runnerCollection->getRunners($job->getType());
+        $jsonConfig = '{}';
+        foreach ($runners as $runner) {
+            if (get_class($runner) == $job->getRunner()) {
+                $jsonConfig = json_encode($runner->getJsonConfigAsArray());
+                break;
+            }
+        }
         $deleteForm = $this->createDeleteForm($job);
         $formType = $jobTypeFactory->create($job);
 
@@ -138,6 +147,7 @@ class JobController extends Controller
 
         return $this->render('AutobusBusBundle::job/edit.html.twig', array(
             'job' => $job,
+            'runner_config' => $jsonConfig,
             'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));

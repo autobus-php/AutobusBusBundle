@@ -23,4 +23,9 @@ interface RunnerInterface
      * @return bool
      */
     public function supports(string $type): bool;
+
+    /**
+     * @return array
+     */
+    public function getJsonConfigAsArray(): array;
 }
