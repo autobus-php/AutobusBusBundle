@@ -2,7 +2,7 @@
 
 {% block content %}
     <h1>{{ 'Job edit'|trans }}</h1>
-
+    <input type="hidden" class="runner-config" value="{{ runner_config }}"/>
     {{ form_start(edit_form) }}
         {{ form_widget(edit_form) }}
         <div class="text-center">
@@ -15,4 +15,47 @@
             <input type="submit" class="btn btn-sm btn-danger" value="{{ 'Delete'|trans }}">
         {{ form_end(delete_form) }}
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/jquery-3.2.1.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('js/flat-ui.min.js') }}"></script>
+    <div id="res" class="alert"></div>
+    <script type="text/javascript" src={{ asset('jsonform/deps/jquery.min.js') }}></script>
+    <script type="text/javascript" src={{ asset('jsonform/deps/underscore.js') }}></script>
+    <script type="text/javascript" src={{ asset('jsonform/deps/opt/jsv.js') }}></script>
+    <script type="text/javascript" src={{ asset('jsonform/lib/jsonform.js') }}></script>
+    <script type="text/javascript">
+        function addCol() {
+            $('.json-form input').parent('div.controls').addClass('col-sm-10');
+            $('.json-form input').parent('div.controls').siblings('label').addClass('col-sm-2');
+        }
+        $(document).ready(function() {
+            var config = $.parseJSON($('#AutobusBusBundle_job_config').val());
+            var runnerConfig = $.parseJSON($('.runner-config').val());
+
+            $('form').jsonForm({
+                schema: runnerConfig,
+                value: config,
+                form: [
+                    "*"
+                ],
+                onSubmit: function (errors, values) {
+                    $.each(values, function(index, value) {
+                        config[index] = value;
+                    });
+
+                    $('#AutobusBusBundle_job_config').val(JSON.stringify(config, null, 4));
+                    $('form').submit();
+                }
+            });
+
+            $('form #AutobusBusBundle_job').append("<legend>Configuration</legend>");
+            $('form div:first').addClass('form-group json-form').appendTo('form #AutobusBusBundle_job');
+            addCol();
+            $('.json-form li legend').hide();
+            $('.json-form ._jsonform-array-buttons a').on('click', addCol);
+        });
+    </script>
 {% endblock %}

@@ -5,8 +5,10 @@ namespace Autobus\Bundle\BusBundle\Form;
 use Autobus\Bundle\BusBundle\Entity\JobGroup;
 use Autobus\Bundle\BusBundle\Runner\RunnerCollection;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -29,6 +31,7 @@ class JobType extends AbstractType implements JobTypeInterface
         foreach ($runners as $runner) {
             $availableRunners[get_class($runner)] = get_class($runner);
         }
+
         $builder
             ->add('name')
             ->add('runner', ChoiceType::class, ['choices' => $availableRunners])
@@ -38,7 +41,7 @@ class JobType extends AbstractType implements JobTypeInterface
                 ['placeholder' => 'Choose ...', 'required' => false, 'class' => JobGroup::class]
             )
             ->add('trace')
-            ->add('config');
+            ->add('config', HiddenType::class);
     }
 
     /**

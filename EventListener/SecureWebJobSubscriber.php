@@ -58,8 +58,8 @@ class SecureWebJobSubscriber implements EventSubscriberInterface
 
         $config = $job->getConfigArray();
 
-        if ($job instanceof WebJob && $job->isSecure() && isset($config['security']['modes'])) {
-            $this->securityChain->check($request, $config['security']['modes']);
+        if ($job instanceof WebJob && $job->isSecure() && !empty($config['securityModes']) && null !== json_decode($config['securityModes'], true)) {
+            $this->securityChain->check($request, json_decode($config['securityModes'], true));
         }
     }
 }
