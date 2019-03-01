@@ -4,15 +4,15 @@
     <h1>{{ 'Job edit'|trans }}</h1>
     <input type="hidden" class="runner-config" value="{{ runner_config }}"/>
     {{ form_start(edit_form) }}
-        {{ form_widget(edit_form) }}
-        <div class="text-center">
-            <input type="submit" value="{{ 'Save'|trans }}" class="btn btn-primary btn-sm" />
-        </div>
+    {{ form_widget(edit_form) }}
+    <div class="text-center">
+        <input type="submit" value="{{ 'Save'|trans }}" class="btn btn-primary btn-sm" />
+    </div>
     {{ form_end(edit_form) }}
 
     <div class="text-center mtl">
         {{ form_start(delete_form) }}
-            <input type="submit" class="btn btn-sm btn-danger" value="{{ 'Delete'|trans }}">
+        <input type="submit" class="btn btn-sm btn-danger" value="{{ 'Delete'|trans }}">
         {{ form_end(delete_form) }}
     </div>
 {% endblock %}
@@ -32,7 +32,13 @@
             $('.json-form input').parent('div.controls').siblings('label').addClass('col-sm-2');
         }
         $(document).ready(function() {
-            var config = $.parseJSON($('#AutobusBusBundle_job_config').val());
+            var config = null;
+            try {
+                config = $.parseJSON($('#AutobusBusBundle_job_config').val());
+            } catch (err) {
+                // No configuration case
+                config = '{}';
+            }
             var runnerConfig = $.parseJSON($('.runner-config').val());
 
             $('form').jsonForm({
