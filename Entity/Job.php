@@ -81,7 +81,7 @@ abstract class Job extends BaseJob
     protected $updatedAt;
 
     /**
-     * @ORM\OneToMany(targetEntity="Autobus\Bundle\BusBundle\Entity\Execution", mappedBy="job")
+     * @ORM\OneToMany(targetEntity="Autobus\Bundle\BusBundle\Entity\Execution", mappedBy="job", cascade={"remove"}, orphanRemoval=true)
      */
     protected $executions;
 
