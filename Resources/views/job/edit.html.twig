@@ -6,7 +6,7 @@
     {{ form_start(edit_form) }}
     {{ form_widget(edit_form) }}
     <div class="text-center">
-        <input type="submit" value="{{ 'Save'|trans }}" class="btn btn-primary btn-sm" />
+        <input type="submit" value="{{ 'Save'|trans }}" class="btn btn-primary btn-sm"/>
     </div>
     {{ form_end(edit_form) }}
 
@@ -31,13 +31,14 @@
             $('.json-form input').parent('div.controls').addClass('col-sm-10');
             $('.json-form input').parent('div.controls').siblings('label').addClass('col-sm-2');
         }
-        $(document).ready(function() {
+
+        $(document).ready(function () {
             var config = null;
             try {
                 config = $.parseJSON($('#AutobusBusBundle_job_config').val());
             } catch (err) {
                 // No configuration case
-                config = '{}';
+                config = $.parseJSON('{}');
             }
             var runnerConfig = $.parseJSON($('.runner-config').val());
 
@@ -48,10 +49,9 @@
                     "*"
                 ],
                 onSubmit: function (errors, values) {
-                    $.each(values, function(index, value) {
+                    $.each(values, function (index, value) {
                         config[index] = value;
                     });
-
                     $('#AutobusBusBundle_job_config').val(JSON.stringify(config, null, 4));
                     $('form').submit();
                 }
