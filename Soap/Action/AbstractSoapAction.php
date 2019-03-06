@@ -3,6 +3,7 @@
 namespace Autobus\Bundle\BusBundle\Soap\Action;
 
 use Autobus\Bundle\BusBundle\Entity\Job;
+use Autobus\Bundle\BusBundle\Model\JobInterface;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -11,7 +12,7 @@ use Psr\Log\LoggerInterface;
  * @author  Simon CARRE <simon.carre@clickandmortar.fr>
  * @package Autobus\Bundle\BusBundle\Soap\Action
  */
-abstract class AbstractSoapAction
+abstract class AbstractSoapAction implements SoapActionInterface
 {
     /**
      * @var LoggerInterface
@@ -52,11 +53,11 @@ abstract class AbstractSoapAction
     }
 
     /**
-     * @param Job $job
+     * @param JobInterface $job
      *
      * @return AbstractSoapAction
      */
-    public function setJob(Job $job)
+    public function setJob(JobInterface $job)
     {
         $this->job = $job;
 

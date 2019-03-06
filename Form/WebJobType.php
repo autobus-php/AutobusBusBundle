@@ -17,7 +17,7 @@ class WebJobType extends JobType
 
         $builder
           ->add('path')
-          ->add('secure')
+          ->add('secure', ChoiceType::class, ['choices' => ['Yes' => 1, 'No' => 0]])
           ->add(
               'methods',
               ChoiceType::class,

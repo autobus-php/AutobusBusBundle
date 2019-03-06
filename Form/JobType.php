@@ -40,7 +40,7 @@ class JobType extends AbstractType implements JobTypeInterface
                 EntityType::class,
                 ['placeholder' => 'Choose ...', 'required' => false, 'class' => JobGroup::class]
             )
-            ->add('trace')
+            ->add('trace', ChoiceType::class, ['choices' => ['Yes' => 1, 'No' => 0]])
             ->add('config', HiddenType::class);
     }
 
