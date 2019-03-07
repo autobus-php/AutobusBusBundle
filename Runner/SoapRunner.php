@@ -6,9 +6,8 @@ use Autobus\Bundle\BusBundle\Context;
 use Autobus\Bundle\BusBundle\Entity\Job;
 use Autobus\Bundle\BusBundle\Entity\Execution;
 use Autobus\Bundle\BusBundle\Helper\JobHelper;
-use Autobus\Bundle\BusBundle\Soap\Action\SoapAction;
+use Autobus\Bundle\BusBundle\Soap\Action\SoapActionInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -17,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @author  Simon CARRE <simon.carre@clickandmortar.fr>
  * @package Autobus\Bundle\BusBundle\Runner
  */
-class SoapRunner extends WebRunner
+abstract class SoapRunner extends WebRunner
 {
     /**
      * Wsdl placeholder for the service location
@@ -126,10 +125,7 @@ class SoapRunner extends WebRunner
     /**
      * Return SOAP action
      *
-     * @return SoapAction
+     * @return SoapActionInterface
      */
-    protected function getSoapAction()
-    {
-        // TODO: Implement getSoapAction() method.
-    }
+    abstract protected function getSoapAction();
 }
