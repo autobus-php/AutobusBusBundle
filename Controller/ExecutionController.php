@@ -3,12 +3,12 @@
 namespace Autobus\Bundle\BusBundle\Controller;
 
 use Autobus\Bundle\BusBundle\Entity\Execution;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * Execution controller.
  */
-class ExecutionController extends Controller
+class ExecutionController extends AbstractController
 {
     /**
      * Finds and displays a service call entity.
@@ -22,7 +22,7 @@ class ExecutionController extends Controller
         return $this->render(
             'AutobusBusBundle::execution/show.html.twig',
             array(
-            'execution' => $execution,
+                'execution' => $execution,
             )
         );
     }

@@ -31,6 +31,10 @@ class SecurityChain
     public function check(Request $request, array $modes)
     {
         foreach ($modes as $strategyConfig) {
+            if (!isset($strategyConfig['mode'])) {
+                continue;
+            }
+
             if (!isset($this->securityStrategies[$strategyConfig['mode']])) {
                 throw new UnknownSecurityStrategyException(
                     sprintf(
