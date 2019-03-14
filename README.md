@@ -63,10 +63,22 @@ return [
 
 ### Topic jobs
 
+Two queuing systems are available:
+
+* With **Enqueue** library and usage of RabbitMQ for example:
+
 Add the following line to your crontab:
 ```
 * * * * * php bin/console enqueue:consume --setup-broker -vvv
 ``` 
+
+* With **Google PubSub** library (https://cloud.google.com/pubsub/docs/overview):
+
+Execute the following command with **Supervisor** tool (http://supervisord.org/):
+```
+php bin/console autobus:pubsub:consume
+``` 
+
 
 ### Cron jobs
 

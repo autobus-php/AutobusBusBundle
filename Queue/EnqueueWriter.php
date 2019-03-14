@@ -11,7 +11,7 @@ use Enqueue\Client\TraceableProducer as Producer;
  * @author  Simon CARRE <simon.carre@clickandmortar.fr>
  * @package Autobus\Bundle\BusBundle\Queue
  */
-class Writer
+class EnqueueWriter implements WriterInterface
 {
     /**
      * @var Producer
@@ -29,12 +29,7 @@ class Writer
     }
 
     /**
-     * Write $message to given $topic
-     *
-     * @param string         $topic
-     * @param string|Message $message
-     *
-     * @return void
+     * {@inheritdoc}
      */
     public function write($topic, $message)
     {
