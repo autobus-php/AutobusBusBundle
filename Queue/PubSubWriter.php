@@ -6,12 +6,12 @@ use Google\Cloud\PubSub\PubSubClient;
 use Autobus\Bundle\BusBundle\Helper\PubSubHelper;
 
 /**
- * Topic queue writer
+ * Google PubSub writer
  *
  * @author  Simon CARRE <simon.carre@clickandmortar.fr>
  * @package Autobus\Bundle\BusBundle\Queue
  */
-class Writer implements WriterInterface
+class PubSubWriter implements WriterInterface
 {
     /**
      * @var PubSubHelper
