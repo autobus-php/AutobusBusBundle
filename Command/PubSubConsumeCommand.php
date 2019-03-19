@@ -5,6 +5,7 @@ namespace Autobus\Bundle\BusBundle\Command;
 use Autobus\Bundle\BusBundle\Context;
 use Autobus\Bundle\BusBundle\Entity\Execution;
 use Autobus\Bundle\BusBundle\Entity\TopicJob;
+use Autobus\Bundle\BusBundle\Helper\PubSubHelper;
 use Autobus\Bundle\BusBundle\Runner\AbstractTopicRunner;
 use Doctrine\ORM\EntityManagerInterface;
 use Google\Cloud\PubSub\Message;
@@ -48,19 +49,26 @@ class PubSubConsumeCommand extends Command
     protected $entityManager;
 
     /**
+     * @var PubSubHelper
+     */
+    protected $pubSubHelper;
+
+    /**
      * QueueConsumeCommand constructor.
      *
      * @param string|null            $name
      * @param ContainerInterface     $container
      * @param LoggerInterface        $logger
      * @param EntityManagerInterface $entityManager
+     * @param PubSubHelper           $pubSubHelper
      */
-    public function __construct(string $name = null, ContainerInterface $container, LoggerInterface $logger, EntityManagerInterface $entityManager)
+    public function __construct(string $name = null, ContainerInterface $container, LoggerInterface $logger, EntityManagerInterface $entityManager, PubSubHelper $pubSubHelper)
     {
         parent::__construct($name);
         $this->container     = $container;
         $this->logger        = $logger;
         $this->entityManager = $entityManager;
+        $this->pubSubHelper  = $pubSubHelper;
     }
 
     /**
@@ -91,18 +99,19 @@ class PubSubConsumeCommand extends Command
 
             // Pull messages for each job
             foreach ($topicJobs as $topicJob) {
-                $topicName    = $topicJob->getTopic();
-                $subscription = $pubSubClient->subscription($topicName);
+                $subscriptionName = $topicJob->getTopic();
+                $realTopicName    = $this->pubSubHelper->getRealTopicName($topicJob->getTopic());
+                $subscription     = $pubSubClient->subscription($subscriptionName);
                 if (!$subscription->exists()) {
                     // Check topic
-                    $topic = $pubSubClient->topic($topicName);
+                    $topic = $pubSubClient->topic($realTopicName);
                     if (!$topic->exists()) {
-                        $this->logger->warning(sprintf('[%s] No topic with name %s for subscription', __METHOD__, $topicName));
+                        $this->logger->warning(sprintf('[%s] No topic with name %s for subscription', __METHOD__, $realTopicName));
                         continue;
                     }
 
                     // Create subscription
-                    $subscription = $pubSubClient->subscribe($topicName, $topicName);
+                    $subscription = $pubSubClient->subscribe($subscriptionName, $realTopicName);
                 }
 
                 // Process messages
