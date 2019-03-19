@@ -85,11 +85,11 @@ class PubSubConsumeCommand extends Command
         $pubSubClient = new PubSubClient();
         $wait         = $input->getOption('wait');
 
-        /** @var TopicJob[] $topicJobs */
-        $topicJobs = $this->entityManager->getRepository('AutobusBusBundle:TopicJob')->findAll();
-
-        // Pull messages for each job
         while (1) {
+            /** @var TopicJob[] $topicJobs */
+            $topicJobs = $this->entityManager->getRepository('AutobusBusBundle:TopicJob')->findAll();
+
+            // Pull messages for each job
             foreach ($topicJobs as $topicJob) {
                 $topicName    = $topicJob->getTopic();
                 $subscription = $pubSubClient->subscription($topicName);
