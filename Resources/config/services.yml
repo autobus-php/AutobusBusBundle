@@ -71,16 +71,20 @@ services:
       - '@router.request_context'
 
   # Queue
-  Autobus\Bundle\BusBundle\Queue\Writer:
-    arguments:
-      - '@enqueue.client.default.producer'
+  Autobus\Bundle\BusBundle\Queue\Writer: ~
 
   # Helper
   Autobus\Bundle\BusBundle\Helper\JobHelper:
     arguments:
       - '@kernel'
 
+  Autobus\Bundle\BusBundle\Helper\PubSubHelper: ~
+
   # Command
   Autobus\Bundle\BusBundle\Command\AutobusCronRunCommand:
+    tags:
+    - { name: console.command }
+
+  Autobus\Bundle\BusBundle\Command\PubSubConsumeCommand:
     tags:
     - { name: console.command }
