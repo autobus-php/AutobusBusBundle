@@ -99,9 +99,9 @@ class PubSubConsumeCommand extends Command
 
             // Pull messages for each job
             foreach ($topicJobs as $topicJob) {
-                $subscriptionName = $topicJob->getTopic();
-                $realTopicName    = $this->pubSubHelper->getRealTopicName($topicJob->getTopic());
-                $subscription     = $pubSubClient->subscription($subscriptionName);
+                $topicName     = $topicJob->getTopic();
+                $realTopicName = $subscriptionName = $this->pubSubHelper->getRealTopicName($topicName);
+                $subscription  = $pubSubClient->subscription($subscriptionName);
                 if (!$subscription->exists()) {
                     // Check topic
                     $topic = $pubSubClient->topic($realTopicName);
