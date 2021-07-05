@@ -18,13 +18,10 @@
             "Autobus\\Bundle\\BusBundle\\": ""
         }
     },
-    "minimum-stability": "dev",
-    "prefer-stable": true,
     "require": {
         "php": ">=7.0.0",
         "knplabs/knp-paginator-bundle": "2.8.*",
-        "autobus-php/autobus-bus-export-bundle": "dev-master",
-        "autobus-php/autobus-bus-sample-bundle": "dev-master",
+        "autobus-php/autobus-bus-export-bundle": "2.2.*",
         "enqueue/amqp-lib": "0.9.*",
         "enqueue/enqueue-bundle": "0.9.*",
         "google/cloud-pubsub": "^1.9"
