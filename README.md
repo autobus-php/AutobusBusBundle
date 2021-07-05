@@ -6,7 +6,7 @@ Configure your atomic jobs in order to be played by cron, queue listener or webs
 
 ## Requirements
 
- - PHP 7+
+ - PHP 8+
 
 ## Installation
 
@@ -14,49 +14,6 @@ Configure your atomic jobs in order to be played by cron, queue listener or webs
 
 ```console
 $ composer require autobus-php/autobus-bus-bundle
-```
-
-### Enable the Bundle
-
-Enable the bundle by adding it to the list of registered bundles.
-
-**For Symfony 3:**
-
-In the `app/AppKernel.php` file of your project:
-
-```php
-<?php
-// app/AppKernel.php
-
-// ...
-class AppKernel extends Kernel
-{
-    public function registerBundles()
-    {
-        $bundles = [
-            // ...
-            new Autobus\Bundle\BusBundle\AutobusBusBundle(),
-        ];
-
-        // ...
-    }
-
-    // ...
-}
-```
-
-**For Symfony 4:**
-
-In the `config/bundles.php` file of your project:
-```php
-<?php
-// config/bundles.php
-
-return [
-    // ...
-    Autobus\Bundle\BusBundle\AutobusBusBundle::class => ['all' => true],
-];
-
 ```
 
 ## Configuration
@@ -77,8 +34,7 @@ Add the following line to your crontab:
 Execute the following command with **Supervisor** tool (http://supervisord.org/):
 ```
 php bin/console autobus:pubsub:consume
-``` 
-
+```
 
 ### Cron jobs
 

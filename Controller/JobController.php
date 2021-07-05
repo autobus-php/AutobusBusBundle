@@ -38,11 +38,10 @@ class JobController extends Controller
      */
     public function indexAction()
     {
-        $em = $this->getDoctrine()->getManager();
-
+        $em   = $this->getDoctrine()->getManager();
         $jobs = $em->getRepository('AutobusBusBundle:Job')->findAll();
 
-        return $this->render('AutobusBusBundle::job/index.html.twig', array(
+        return $this->render('@AutobusBus/job/index.html.twig', array(
             'jobs' => $jobs,
         ));
     }
@@ -58,7 +57,7 @@ class JobController extends Controller
     {
         $type = $request->get('job_type', '');
         if (empty($type)) {
-            return $this->render('AutobusBusBundle::job/new.html.twig', []);
+            return $this->render('@AutobusBus/job/new.html.twig', []);
         }
 
         $job      = $jobFactory->create($type);
@@ -78,7 +77,7 @@ class JobController extends Controller
             return $this->redirectToRoute('job_show', array('id' => $job->getId()));
         }
 
-        return $this->render('AutobusBusBundle::job/new.html.twig', array(
+        return $this->render('@AutobusBus/job/new.html.twig', array(
             'job'  => $job,
             'form' => $form->createView(),
         ));
@@ -87,8 +86,8 @@ class JobController extends Controller
     /**
      * Finds and displays a job entity.
      *
-     * @param Job $job
-     * @param int $page
+     * @param Job                $job
+     * @param int                $page
      * @param PaginatorInterface $paginator
      *
      * @return Response
@@ -107,7 +106,7 @@ class JobController extends Controller
             self::PAGINATION_EXECUTIONS_PER_PAGE
         );
 
-        return $this->render('AutobusBusBundle::job/show.html.twig', array(
+        return $this->render('@AutobusBus/job/show.html.twig', array(
             'job'         => $job,
             'delete_form' => $deleteForm->createView(),
             'executions'  => $executions,
@@ -120,7 +119,7 @@ class JobController extends Controller
      */
     public function editAction(Request $request, Job $job, JobTypeFactory $jobTypeFactory, RunnerCollection $runnerCollection)
     {
-        $runners = $runnerCollection->getRunners($job->getType());
+        $runners    = $runnerCollection->getRunners($job->getType());
         $jsonConfig = '{}';
         foreach ($runners as $runner) {
             if (get_class($runner) == $job->getRunner()) {
@@ -129,7 +128,7 @@ class JobController extends Controller
             }
         }
         $deleteForm = $this->createDeleteForm($job);
-        $formType = $jobTypeFactory->create($job);
+        $formType   = $jobTypeFactory->create($job);
 
         $editForm = $this->createForm(
             get_class($formType),
@@ -145,11 +144,11 @@ class JobController extends Controller
             return $this->redirectToRoute('job_edit', array('id' => $job->getId()));
         }
 
-        return $this->render('AutobusBusBundle::job/edit.html.twig', array(
-            'job' => $job,
+        return $this->render('@AutobusBus/job/edit.html.twig', array(
+            'job'           => $job,
             'runner_config' => $jsonConfig,
-            'edit_form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
+            'edit_form'     => $editForm->createView(),
+            'delete_form'   => $deleteForm->createView(),
         ));
     }
 
@@ -184,9 +183,9 @@ class JobController extends Controller
         /** @var RunnerInterface $runner */
         $runner = $this->get($runnerServiceId);
 
-        $response = new Response();
+        $response  = new Response();
         $execution = new Execution();
-        $context = new Context();
+        $context   = new Context();
         $context->setRequest($request)->setResponse($response);
 
         $runner->handle($context, $job, $execution);
@@ -210,9 +209,8 @@ class JobController extends Controller
     private function createDeleteForm(Job $job)
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('job_delete', array('id' => $job->getId())))
-            ->setMethod('DELETE')
-            ->getForm()
-        ;
+                    ->setAction($this->generateUrl('job_delete', array('id' => $job->getId())))
+                    ->setMethod('DELETE')
+                    ->getForm();
     }
 }

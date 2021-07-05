@@ -4,7 +4,7 @@ namespace Autobus\Bundle\BusBundle\Converter;
 
 use Autobus\Bundle\BusBundle\Repository\WebJobRepository;
 use Autobus\Bundle\BusBundle\Routing\Matcher\JobUrlMatcher;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,15 +22,15 @@ class JobParamConverter implements ParamConverterInterface
     private $urlMatcher;
 
     /**
-     * @var ObjectManager
+     * @var EntityManagerInterface
      */
     private $objectManager;
 
     /**
      * @param JobUrlMatcher $urlMatcher
-     * @param ObjectManager $objectManager
+     * @param EntityManagerInterface $objectManager
      */
-    public function __construct(JobUrlMatcher $urlMatcher, ObjectManager $objectManager)
+    public function __construct(JobUrlMatcher $urlMatcher, EntityManagerInterface $objectManager)
     {
         $this->urlMatcher = $urlMatcher;
         $this->objectManager = $objectManager;
