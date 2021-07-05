@@ -19,8 +19,8 @@
         }
     },
     "require": {
-        "php": ">=7.0.0",
-        "knplabs/knp-paginator-bundle": "2.8.*",
+        "php": ">=8.0",
+        "knplabs/knp-paginator-bundle": "5.6.*",
         "autobus-php/autobus-bus-export-bundle": "2.2.*",
         "enqueue/amqp-lib": "0.9.*",
         "enqueue/enqueue-bundle": "0.9.*",
