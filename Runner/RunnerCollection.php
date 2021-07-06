@@ -5,12 +5,13 @@ namespace Autobus\Bundle\BusBundle\Runner;
 class RunnerCollection
 {
     /**
-     * @var RunnerIntercace[]
+     * @var RunnerInterface[]
      */
-    private $runners;
+    private $runners = [];
 
     /**
      * RunnerCollection constructor.
+     *
      * @param iterable $runners
      */
     public function __construct(iterable $runners)

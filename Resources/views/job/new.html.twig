@@ -1,47 +1,48 @@
 {% extends '@AutobusBus/base.html.twig' %}
 
-{% block content %}
-    <h1>{{ 'Job creation'|trans }}</h1>
-
-    {% if form is not defined %}
-        <form action="{{ path('job_new') }}" method="get" id="form-job-type">
-            <div class="form-group">
-                <div class="col-md-4 col-md-offset-4">
-                    <select class="form-control" name="job_type" id="job-type" required="required">
-                        <option value="">{{ 'Choose'|trans }}</option>
-                        <option value="web">Web</option>
-                        <option value="queue">Queue</option>
-                        <option value="cron">Cron</option>
-                        <option value="topic">Topic</option>
-                    </select>
-                    <div class="help-block with-errors"></div>
-                </div>
-            </div>
-            <div class="clearfix"></div>
-            <div class="p-m">
-                <div class="text-center">
-                    <button class="btn btn-primary"><i class="fa fa-plus"></i> {{ 'Create'|trans }}
-                    </button>
-                </div>
-            </div>
-            <div class="clearfix"></div>
-        </form>
-    {% else %}
-        {{ form_start(form) }}
-        {{ form_widget(form) }}
-        <div class="text-center">
-            <input type="submit" class="btn btn-sm btn-success" value="{{ 'Save'|trans }}"/>
-        </div>
-        {{ form_end(form) }}
-    {% endif %}
-{% endblock %}
 {% block javascripts %}
     {{ parent() }}
     <script>
         jQuery(function () {
-            jQuery('#job-type').on('change', function() {
+            jQuery('#job-type').on('change', function () {
                 jQuery('#form-job-type').submit();
             });
         });
     </script>
+{% endblock %}
+
+
+{% block content %}
+    <div class="row">
+        <div class="col">
+            <h1>{{ 'Job creation'|trans }}</h1>
+        </div>
+    </div>
+    <div class="row justify-content-lg-center">
+        {% if form is not defined %}
+            <div class="col col-lg-4">
+                <form action="{{ path('job_new') }}" method="get" id="form-job-type">
+                    <div class="form-group">
+                        <select class="form-control" name="job_type" id="job-type" required="required">
+                            <option value="">{{ 'Choose'|trans }}</option>
+                            <option value="web">Web</option>
+                            <option value="queue">Queue</option>
+                            <option value="cron">Cron</option>
+                            <option value="topic">Topic</option>
+                        </select>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </form>
+            </div>
+        {% else %}
+            <div class="col">
+                {{ form_start(form) }}
+                {{ form_widget(form) }}
+                <div class="text-center">
+                    <input type="submit" class="btn btn-primary" value="{{ 'Save'|trans }}"/>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        {% endif %}
+    </div>
 {% endblock %}

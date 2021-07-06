@@ -57,13 +57,11 @@ class JobController extends Controller
     {
         $type = $request->get('job_type', '');
         if (empty($type)) {
-            return $this->render('@AutobusBus/job/new.html.twig', []);
+            return $this->render('@AutobusBus/job/new.html.twig');
         }
-
         $job      = $jobFactory->create($type);
         $formType = $jobTypeFactory->create($job);
-
-        $form = $this->createForm(
+        $form     = $this->createForm(
             get_class($formType),
             $job
         );
