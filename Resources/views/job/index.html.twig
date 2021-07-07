@@ -10,7 +10,7 @@
         </div>
     </div>
 
-    <table class="table">
+    <table class="table table-striped">
         <thead>
             <tr>
                 <th scope="col">{{ 'Name'|trans }}</th>
@@ -26,9 +26,11 @@
                 {% set lastExecution = job.lastExecution %}
                 <tr>
                     <td>
-                        <a href="{{ path('job_show', { 'id': job.id }) }}">{{ job.name }}</a>
+                        {{ job.name }}
                     </td>
-                    <td>{{ job.type|capitalize }}</td>
+                    <td>
+                        <span class="badge badge-secondary">{{ job.type|upper }}</span>
+                    </td>
                     <td>{% include("@AutobusBus/job/partials/_list_details_" ~ job.type ~ ".html.twig") %}</td>
                     <td>{% include("@AutobusBus/job/partials/_state.html.twig") %}</td>
                     <td>
@@ -37,8 +39,14 @@
                         {% endif %}
                     </td>
                     <td>
-                        <a href="{{ path('job_edit', { 'id': job.id }) }}"
-                           class="btn btn-secondary">{{ 'Edit'|trans }}</a>
+                        <a href="{{ path('job_show', { 'id': job.id }) }}" class="btn btn-sm btn-primary" data-toggle="tooltip"
+                           data-placement="top" title="{{ 'View'|trans }}">
+                            <span class="fas fa-eye"></span>
+                        </a>
+                        <a href="{{ path('job_edit', { 'id': job.id }) }}" class="btn btn-sm btn-secondary" data-toggle="tooltip"
+                           data-placement="top" title="{{ 'Edit'|trans }}">
+                            <span class="fas fa-edit"></span>
+                        </a>
                     </td>
                 </tr>
             {% endfor %}

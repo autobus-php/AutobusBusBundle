@@ -1,13 +1,13 @@
 {% if lastExecution %}
     {% set state = lastExecution.state %}
     {% if state == 'success' %}
-        {% set labelClass = 'label-success' %}
+        {% set badgeClass = 'badge-success' %}
     {% elseif state == 'error' %}
-        {% set labelClass = 'label-danger' %}
+        {% set badgeClass = 'badge-danger' %}
     {% else %}
-        {% set labelClass = 'label-warning' %}
+        {% set badgeClass = 'badge-warning' %}
     {% endif %}
-    <a class="label {{ labelClass }}" href="{{ path('execution_show', {id: lastExecution.id}) }}">{{ state|trans }}</a>
+    <a class="badge {{ badgeClass }}" href="{{ path('execution_show', {id: lastExecution.id}) }}">{{ state|trans }}</a>
 {% else %}
-    <span class="label label-default">N/A</span>
+    <span class="badge badge-secondary">N/A</span>
 {% endif %}
