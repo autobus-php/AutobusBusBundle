@@ -1,46 +1,74 @@
 {% extends '@AutobusBus/base.html.twig' %}
 
 {% block content %}
-    <h1>{{ 'Job detail'|trans }} : {{ job.name }}</h1>
+    <div class="row">
+        <div class="col">
+            <h1>{{ 'Job detail'|trans }} : {{ job.name }}</h1>
+            <h2>{{ 'Execution history'|trans }}</h2>
 
-    <h2>{{ 'Execution history'|trans }}</h2>
-
-    <table class="table table-condensed table-striped">
-        <thead>
-        <tr>
-            <th>{{ 'Date'|trans }}</th>
-            <th>{{ 'Caller'|trans }}</th>
-            <th>{{ 'Duration'|trans }}</th>
-            <th>{{ 'State'|trans }}</th>
-            <th>{{ 'Actions'|trans }}</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for execution in executions %}
-            <tr>
-                <td>{{ execution.date|date('Y-m-d H:i:s') }}</td>
-                <td>{{ execution.caller }}</td>
-                <td>{{ execution.duration }} ms</td>
-                <td>{{ execution.state }}</td>
-                <td><a href="{{ path('execution_show', {id: execution.id}) }}">{{ 'Detail'|trans }}</a></td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    <div class="navigation text-center">
-        {{ knp_pagination_render(executions) }}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>{{ 'Date'|trans }}</th>
+                        <th>{{ 'Caller'|trans }}</th>
+                        <th>{{ 'Duration'|trans }}</th>
+                        <th>{{ 'State'|trans }}</th>
+                        <th>{{ 'Actions'|trans }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for execution in executions %}
+                        <tr>
+                            <td>{{ execution.date|date('Y-m-d H:i:s') }}</td>
+                            <td>{{ execution.caller }}</td>
+                            <td>{{ execution.duration }} ms</td>
+                            <td>
+                                {% if execution.state == 'success' %}
+                                    {% set badgeClass = 'badge-success' %}
+                                {% elseif execution.state == 'error' %}
+                                    {% set badgeClass = 'badge-danger' %}
+                                {% else %}
+                                    {% set badgeClass = 'badge-warning' %}
+                                {% endif %}
+                                <span class="badge {{ badgeClass }}">{{ execution.state }}</span>
+                            </td>
+                            <td>
+                                <a href="{{ path('execution_show', {id: execution.id}) }}"
+                                   class="btn btn-sm btn-primary" data-toggle="tooltip"
+                                   data-placement="top" title="{{ 'View'|trans }}">
+                                    <span class="fas fa-eye"></span>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
-    <ul>
-        <li>
-            <a href="{{ path('job_index') }}">Back to the list</a>
-        </li>
-        <li>
-            <a href="{{ path('job_edit', { 'id': job.id }) }}">Edit</a>
-        </li>
-        <li>
-            {{ form_start(delete_form) }}
-            <input type="submit" value="Delete">
-            {{ form_end(delete_form) }}
-        </li>
-    </ul>
+    <div class="row">
+        <div class="col">
+            <div class="navigation text-center">
+                {{ knp_pagination_render(executions) }}
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="btn-group">
+                <a href="{{ path('job_index') }}" class="btn btn-secondary" data-toggle="tooltip"
+                   data-placement="top" title="{{ 'Back to list'|trans }}">
+                    <span class="fas fa-arrow-left"></span>
+                </a>
+                <a href="{{ path('job_edit', { 'id': job.id }) }}" class="btn btn-secondary" data-toggle="tooltip"
+                   data-placement="top" title="{{ 'Edit'|trans }}">
+                    <span class="fas fa-edit"></span>
+                </a>
+                <a href="#" class="btn btn-danger btn-delete-modal" data-toggle="tooltip"
+                   data-placement="top" title="{{ 'Delete'|trans }}">
+                    <span class="fas fa-times"></span>
+                </a>
+            </div>
+        </div>
+    </div>
+    {% include("@AutobusBus/job/partials/_delete_modal.html.twig") %}
 {% endblock %}
