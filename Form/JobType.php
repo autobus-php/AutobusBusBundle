@@ -25,8 +25,8 @@ class JobType extends AbstractType implements JobTypeInterface
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $job = $options['data'];
-        $runners = $this->runnerCollection->getRunners($job->getType());
+        $job              = $options['data'];
+        $runners          = $this->runnerCollection->getRunners($job->getType());
         $availableRunners = [];
         foreach ($runners as $runner) {
             $availableRunners[get_class($runner)] = get_class($runner);
@@ -34,14 +34,32 @@ class JobType extends AbstractType implements JobTypeInterface
 
         $builder
             ->add('name')
-            ->add('runner', ChoiceType::class, ['choices' => $availableRunners])
+            ->add('runner',
+                ChoiceType::class,
+                [
+                    'choices' => $availableRunners,
+                ]
+            )
             ->add(
                 'group',
                 EntityType::class,
-                ['placeholder' => 'Choose ...', 'required' => false, 'class' => JobGroup::class]
+                [
+                    'placeholder' => 'Choose ...',
+                    'required'    => false,
+                    'class'       => JobGroup::class,
+                ]
             )
-            ->add('trace', ChoiceType::class, ['choices' => ['Yes' => 1, 'No' => 0]])
-            ->add('config', HiddenType::class);
+            ->add(
+                'trace',
+                ChoiceType::class,
+                [
+                    'choices' => ['Yes' => 1, 'No' => 0],
+                ]
+            )
+            ->add(
+                'config',
+                HiddenType::class
+            );
     }
 
     /**

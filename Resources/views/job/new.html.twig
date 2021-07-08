@@ -3,9 +3,9 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-        jQuery(function () {
-            jQuery('#job-type').on('change', function () {
-                jQuery('#form-job-type').submit();
+        $(function () {
+            $('#job-type').on('change', function () {
+                $('#form-job-type').submit();
             });
         });
     </script>
@@ -38,9 +38,7 @@
             <div class="col">
                 {{ form_start(form) }}
                 {{ form_widget(form) }}
-                <div class="text-center">
-                    <input type="submit" class="btn btn-primary" value="{{ 'Save'|trans }}"/>
-                </div>
+                <input type="submit" class="btn btn-primary" value="{{ 'Save'|trans }}"/>
                 {{ form_end(form) }}
             </div>
         {% endif %}

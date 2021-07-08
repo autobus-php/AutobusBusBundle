@@ -120,12 +120,4 @@ abstract class AbstractRunner implements RunnerInterface
     {
         throw new \LogicException(__METHOD__ . ' : "supports" function should be implemented in child classes.');
     }
-
-    /**
-     * @return array
-     */
-    public function getJsonConfigAsArray(): array
-    {
-        throw new \LogicException(__METHOD__ . ' : "getJsonConfigAsArray" function should be implemented in child classes.');
-    }
 }

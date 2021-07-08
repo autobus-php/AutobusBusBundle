@@ -117,18 +117,9 @@ class JobController extends Controller
      */
     public function editAction(Request $request, Job $job, JobTypeFactory $jobTypeFactory, RunnerCollection $runnerCollection)
     {
-        $runners    = $runnerCollection->getRunners($job->getType());
-        $jsonConfig = '{}';
-        foreach ($runners as $runner) {
-            if (get_class($runner) == $job->getRunner()) {
-                $jsonConfig = json_encode($runner->getJsonConfigAsArray());
-                break;
-            }
-        }
         $deleteForm = $this->createDeleteForm($job);
         $formType   = $jobTypeFactory->create($job);
-
-        $editForm = $this->createForm(
+        $editForm   = $this->createForm(
             get_class($formType),
             $job
         );
@@ -143,10 +134,9 @@ class JobController extends Controller
         }
 
         return $this->render('@AutobusBus/job/edit.html.twig', array(
-            'job'           => $job,
-            'runner_config' => $jsonConfig,
-            'edit_form'     => $editForm->createView(),
-            'delete_form'   => $deleteForm->createView(),
+            'job'         => $job,
+            'form'        => $editForm->createView(),
+            'delete_form' => $deleteForm->createView(),
         ));
     }
 

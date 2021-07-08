@@ -1,3 +1,7 @@
 .navbar img {
     max-width: 30px;
 }
+
+#json-editor {
+    height: 400px;
+}
