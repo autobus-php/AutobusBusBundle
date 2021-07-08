@@ -32,7 +32,9 @@
                         <span class="badge badge-secondary">{{ job.type|upper }}</span>
                     </td>
                     <td>{% include("@AutobusBus/job/partials/_list_details_" ~ job.type ~ ".html.twig") %}</td>
-                    <td>{% include("@AutobusBus/job/partials/_state.html.twig") %}</td>
+                    <td>
+                        {% include '@AutobusBus/job/partials/_state.html.twig' with {'lastExecution': lastExecution} only %}
+                    </td>
                     <td>
                         {% if lastExecution %}
                             <a href="{{ path('execution_show', {id: lastExecution.id}) }}">{{ lastExecution.date|date('d/m/Y H:i') }}</a>

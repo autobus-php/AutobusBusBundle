@@ -1,5 +1,8 @@
-{% if lastExecution %}
+{% if lastExecution is defined and lastExecution is not null %}
     {% set state = lastExecution.state %}
+{% endif %}
+
+{% if state is defined %}
     {% if state == 'success' %}
         {% set badgeClass = 'badge-success' %}
     {% elseif state == 'error' %}
@@ -7,7 +10,12 @@
     {% else %}
         {% set badgeClass = 'badge-warning' %}
     {% endif %}
-    <a class="badge {{ badgeClass }}" href="{{ path('execution_show', {id: lastExecution.id}) }}">{{ state|trans }}</a>
+    {% if lastExecution is defined %}
+        <a class="badge {{ badgeClass }}"
+           href="{{ path('execution_show', {id: lastExecution.id}) }}">{{ state }}</a>
+    {% else %}
+        <span class="badge {{ badgeClass }}">{{ state }}</span>
+    {% endif %}
 {% else %}
     <span class="badge badge-secondary">N/A</span>
 {% endif %}

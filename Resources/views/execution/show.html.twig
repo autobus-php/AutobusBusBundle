@@ -12,7 +12,9 @@
         </tr>
         <tr>
             <td>{{ 'State'|trans }}</td>
-            <td>{{ execution.state }}</td>
+            <td>
+                {% include '@AutobusBus/job/partials/_state.html.twig' with {'state': execution.state} only %}
+            </td>
         </tr>
         <tr>
             <td>{{ 'Date'|trans }}</td>

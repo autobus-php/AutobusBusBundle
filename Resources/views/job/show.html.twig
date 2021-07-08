@@ -23,14 +23,7 @@
                             <td>{{ execution.caller }}</td>
                             <td>{{ execution.duration }} ms</td>
                             <td>
-                                {% if execution.state == 'success' %}
-                                    {% set badgeClass = 'badge-success' %}
-                                {% elseif execution.state == 'error' %}
-                                    {% set badgeClass = 'badge-danger' %}
-                                {% else %}
-                                    {% set badgeClass = 'badge-warning' %}
-                                {% endif %}
-                                <span class="badge {{ badgeClass }}">{{ execution.state }}</span>
+                                {% include '@AutobusBus/job/partials/_state.html.twig' with {'state': execution.state} only %}
                             </td>
                             <td>
                                 <a href="{{ path('execution_show', {id: execution.id}) }}"
