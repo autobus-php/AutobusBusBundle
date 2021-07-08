@@ -38,7 +38,10 @@
             <div class="col">
                 {{ form_start(form) }}
                 {{ form_widget(form) }}
-                <input type="submit" class="btn btn-primary" value="{{ 'Save'|trans }}"/>
+                <button type="submit" class="btn btn-primary" data-toggle="tooltip"
+                        data-placement="top" title="{{ 'Save'|trans }}">
+                    <span class="fas fa-check"></span>
+                </button>
                 {{ form_end(form) }}
             </div>
         {% endif %}

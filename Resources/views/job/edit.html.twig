@@ -44,9 +44,17 @@
                 <div id="json-editor"></div>
             </div>
             <div class="btn-group">
-                <input type="submit" value="{{ 'Save'|trans }}" class="btn btn-primary"/>
-                <a href="#" class="btn btn-danger btn-delete-modal">
-                    {{ 'Delete'|trans }}
+                <a href="{{ path('job_show', {'id': job.id}) }}" class="btn btn-secondary" data-toggle="tooltip"
+                   data-placement="top" title="{{ 'Back'|trans }}">
+                    <span class="fas fa-arrow-left"></span>
+                </a>
+                <button type="submit" class="btn btn-primary" data-toggle="tooltip"
+                        data-placement="top" title="{{ 'Save'|trans }}">
+                    <span class="fas fa-check"></span>
+                </button>
+                <a href="#" class="btn btn-danger btn-delete-modal" data-toggle="tooltip"
+                   data-placement="top" title="{{ 'Delete'|trans }}">
+                    <span class="fas fa-times"></span>
                 </a>
             </div>
             {{ form_end(form) }}
