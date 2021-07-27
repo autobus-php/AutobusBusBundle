@@ -44,8 +44,6 @@ services:
     tags: ['kernel.event_subscriber']
 
   Autobus\Bundle\BusBundle\EventListener\FinishExecutionSubscriber:
-    arguments:
-      - '@logger'
     tags: ['kernel.event_subscriber']
 
   Autobus\Bundle\BusBundle\EventListener\RunnerExceptionHandleSubscriber:

@@ -10,6 +10,9 @@ abstract class Execution implements ExecutionInterface
     const STATE_SUCCESS = 'success';
     const STATE_ERROR = 'error';
     const STATE_UNKNOWN = 'unknown';
+    const LOG_TYPE_INFO = 'info';
+    const LOG_TYPE_WARNING = 'warning';
+    const LOG_TYPE_ERROR = 'error';
 
     /**
      * @var int
@@ -244,6 +247,37 @@ abstract class Execution implements ExecutionInterface
     public function getState()
     {
         return $this->state;
+    }
+
+    /**
+     * @param string $type
+     * @param string $message
+     *
+     * @return Execution
+     */
+    public function addLog($type, $message)
+    {
+        // Generate log
+        $logAsString = sprintf(
+            '[%s] %s',
+            $type,
+            $message
+        );
+
+        // Write log
+        if (!empty($this->getLogs())) {
+            $logs = sprintf(
+                "%s\n%s",
+                $this->getLogs(),
+                $logAsString
+            );
+        } else {
+            $logs = $logAsString;
+        }
+        $this->setLogs($logs);
+
+
+        return $this;
     }
 
     /**

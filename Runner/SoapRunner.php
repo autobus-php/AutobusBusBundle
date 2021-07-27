@@ -74,6 +74,7 @@ abstract class SoapRunner extends WebRunner
         $soapServer = new \SoapServer($this->wsdlPath);
         $soapAction = $this->getSoapAction();
         $soapAction->setJob($job);
+        $soapAction->setExecution($execution);
         $soapServer->setObject($soapAction);
         $response = new Response();
         $response->headers->set('Content-Type', 'text/xml; charset=UTF-8');

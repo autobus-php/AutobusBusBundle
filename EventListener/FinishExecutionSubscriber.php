@@ -6,7 +6,6 @@ use Autobus\Bundle\BusBundle\Entity\WebJob;
 use Autobus\Bundle\BusBundle\Entity\TopicJob;
 use Autobus\Bundle\BusBundle\Event\RunnerEvents;
 use Autobus\Bundle\BusBundle\Event\RunnerHandleEvent;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -14,19 +13,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class FinishExecutionSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * @param LoggerInterface $logger
-     */
-    public function __construct(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
-
     /**
      * Returns an array of event names this subscriber wants to listen to.
      *
@@ -73,12 +59,6 @@ class FinishExecutionSubscriber implements EventSubscriberInterface
             $response->setContent($context->getMessage());
 
             if ($job->getTrace()) {
-                $logs = $this->logger->getLogs();
-                $logs = array_map(function ($log) {
-                    return sprintf('%s [%s] %s', $log['timestamp'], $log['priorityName'], $log['message']);
-                }, $logs);
-                $execution->setLogs(implode("\n", $logs));
-
                 $requestString = $request->headers->__toString();
                 $requestString .= "\n\n" . $request->getContent();
                 $execution->setRequest($requestString);

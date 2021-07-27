@@ -3,6 +3,7 @@
 namespace Autobus\Bundle\BusBundle\Soap\Action;
 
 use Autobus\Bundle\BusBundle\Entity\Job;
+use Autobus\Bundle\BusBundle\Model\ExecutionInterface;
 use Autobus\Bundle\BusBundle\Model\JobInterface;
 use Psr\Log\LoggerInterface;
 
@@ -15,22 +16,14 @@ use Psr\Log\LoggerInterface;
 abstract class AbstractSoapAction implements SoapActionInterface
 {
     /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
      * @var Job
      */
     protected $job;
 
     /**
-     * SoapAction constructor.
+     * @var ExecutionInterface
      */
-    public function __construct(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
+    protected $execution;
 
     /**
      * Get stdClass object as array
@@ -60,6 +53,26 @@ abstract class AbstractSoapAction implements SoapActionInterface
     public function setJob(JobInterface $job)
     {
         $this->job = $job;
+
+        return $this;
+    }
+
+    /**
+     * @return ExecutionInterface
+     */
+    public function getExecution()
+    {
+        return $this->execution;
+    }
+
+    /**
+     * @param ExecutionInterface $execution
+     *
+     * @return $this
+     */
+    public function setExecution(ExecutionInterface $execution)
+    {
+        $this->execution = $execution;
 
         return $this;
     }

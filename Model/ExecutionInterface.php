@@ -108,6 +108,14 @@ interface ExecutionInterface
     public function getState();
 
     /**
+     * @param string $type
+     * @param string $message
+     *
+     * @return Execution
+     */
+    public function addLog($type, $message);
+
+    /**
      * @param string $logs
      *
      * @return Execution
