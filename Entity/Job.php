@@ -19,6 +19,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 abstract class Job extends BaseJob
 {
     /**
+     * Recipients separator
+     *
+     * @var string
+     */
+    const RECIPIENTS_SEPARATOR = ',';
+
+    /**
      * @var int
      *
      * @ORM\Column(type="integer")
@@ -67,6 +74,20 @@ abstract class Job extends BaseJob
     protected $trace;
 
     /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean")
+     */
+    protected $emailAlert;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="text", nullable=true)
+     */
+    protected $recipients;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(type="datetime")
@@ -100,7 +121,7 @@ abstract class Job extends BaseJob
     public function __construct()
     {
         $this->executions = new ArrayCollection();
-        $this->secure = false;
+        $this->secure     = false;
     }
 
     /**
@@ -220,7 +241,7 @@ abstract class Job extends BaseJob
     public function setConfigArray($config)
     {
         $this->configArray = $config;
-        $this->config = json_encode($config);
+        $this->config      = json_encode($config);
 
         return $this;
     }
@@ -243,6 +264,46 @@ abstract class Job extends BaseJob
     public function getTrace()
     {
         return $this->trace;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getEmailAlert()
+    {
+        return $this->emailAlert;
+    }
+
+    /**
+     * @param bool $emailAlert
+     *
+     * @return Job
+     */
+    public function setEmailAlert($emailAlert)
+    {
+        $this->emailAlert = $emailAlert;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRecipients()
+    {
+        return $this->recipients;
+    }
+
+    /**
+     * @param string $recipients
+     *
+     * @return Job
+     */
+    public function setRecipients($recipients)
+    {
+        $this->recipients = $recipients;
+
+        return $this;
     }
 
     /**
@@ -307,6 +368,7 @@ abstract class Job extends BaseJob
 
     /**
      * @param mixed $group
+     *
      * @return Job
      */
     public function setGroup($group)
@@ -331,8 +393,9 @@ abstract class Job extends BaseJob
      */
     public function getType()
     {
-        $klass = get_class($this);
+        $klass   = get_class($this);
         $typePos = strrpos($klass, '\\');
+
         return strtolower(substr($klass, $typePos + 1, -3)); // -3 is to remove 'Job' at the end
     }
 
@@ -353,13 +416,28 @@ abstract class Job extends BaseJob
     {
         if ($this->lastExecution === null) {
             $criteria = Criteria::create()
-                ->orderBy(['date' => Criteria::DESC])
-                ->setMaxResults(1);
+                                ->orderBy(['date' => Criteria::DESC])
+                                ->setMaxResults(1);
 
-            $lastExecution = $this->getExecutions()->matching($criteria)->first();
+            $lastExecution       = $this->getExecutions()->matching($criteria)->first();
             $this->lastExecution = $lastExecution ? $lastExecution : null;
         }
 
         return $this->lastExecution;
+    }
+
+    /**
+     * Get recipients as array
+     *
+     * @return array
+     */
+    public function getRecipientsAsArray()
+    {
+        $recipientsAsString = $this->getRecipients();
+        if (empty($recipientsAsString)) {
+            return [];
+        }
+
+        return explode(self::RECIPIENTS_SEPARATOR, $recipientsAsString);
     }
 }

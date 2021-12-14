@@ -1,0 +1,16 @@
+{% extends '@AutobusBus/email/base_email.html.twig' %}
+
+{% block body %}
+    <p>
+        {{ 'Error during job execution'|trans }} : <strong>{{ jobName }}</strong>
+    </p>
+    <p>
+        {{ 'Error message'|trans }} :
+    </p>
+    <p>
+        <strong>{{ errorMessage }}</strong>
+    </p>
+    <p>
+        {{ 'You can find more information on execution page'|trans }} <a href="{{ path('job_index') }}">Autobus</a>
+    </p>
+{% endblock %}

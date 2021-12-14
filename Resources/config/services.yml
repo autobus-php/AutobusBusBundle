@@ -44,6 +44,11 @@ services:
     tags: ['kernel.event_subscriber']
 
   Autobus\Bundle\BusBundle\EventListener\FinishExecutionSubscriber:
+    arguments:
+      - '@mailer'
+      - '@translator'
+      - '%app.sender_email%'
+      - '%app.sender_email_name%'
     tags: ['kernel.event_subscriber']
 
   Autobus\Bundle\BusBundle\EventListener\RunnerExceptionHandleSubscriber:
