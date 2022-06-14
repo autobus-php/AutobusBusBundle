@@ -2,6 +2,8 @@
 
 namespace Autobus\Bundle\BusBundle\Model;
 
+use Autobus\Bundle\BusBundle\Entity\TopicJob;
+
 /**
  * Execution
  */
@@ -318,5 +320,15 @@ abstract class Execution implements ExecutionInterface
         $this->mustBeSaved = $mustBeSaved;
 
         return $this;
+    }
+
+    /**
+     * Only executions from topic job can be rerun
+     *
+     * @return bool
+     */
+    public function canBeReRun(): bool
+    {
+        return $this->job instanceof TopicJob && $this->state === self::STATE_ERROR;
     }
 }

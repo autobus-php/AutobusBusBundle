@@ -102,9 +102,11 @@ class FinishExecutionSubscriber implements EventSubscriberInterface
             // Manage trace
             $response->setContent($context->getMessage());
             if ($job->getTrace()) {
-                $requestString = $request->headers->__toString();
-                $requestString .= "\n\n" . $request->getContent();
-                $execution->setRequest($requestString);
+                if (!$job instanceof TopicJob) {
+                    $requestString = $request->headers->__toString();
+                    $requestString .= "\n\n" . $request->getContent();
+                    $execution->setRequest($requestString);
+                }
 
                 $responseString = sprintf("HTTP %d\n\n", $response->getStatusCode());
                 $responseString .= $response->headers->__toString();

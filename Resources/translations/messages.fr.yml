@@ -55,3 +55,6 @@ Are you sure you want to delete this item?: Voulez-vous vraiment supprimer cet �
 Error during job execution: Erreur pendant l'exécution du job
 Error message: Message d'erreur
 You can find more information on execution page: Vous pouvez retrouver plus d'informations sur la page de l'exécution sur
+Rerun: Relancer
+Rerun execution: Replanifier l'exécution
+Execution was scheduled: L'exécution a été re-planifiée

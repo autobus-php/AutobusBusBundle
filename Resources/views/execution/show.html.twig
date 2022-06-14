@@ -28,6 +28,17 @@
             <td>{{ 'Duration'|trans }}</td>
             <td>{{ execution.duration }} ms</td>
         </tr>
+        {% if  execution.canBeReRun %}
+            <tr>
+                <td>{{ 'Rerun'|trans }}</td>
+                <td>
+                    <a href="{{ path('execution_show', { 'id': execution.id, 'reRun': true }) }}" class="btn btn-sm btn-primary" data-toggle="tooltip"
+                       data-placement="top" title="{{ 'Rerun execution'|trans }}">
+                        <span class="fas fa-play"></span>
+                    </a>
+                </td>
+            </tr>
+        {% endif %}
         </tbody>
     </table>
 

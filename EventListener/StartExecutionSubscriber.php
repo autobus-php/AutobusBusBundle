@@ -4,6 +4,7 @@ namespace Autobus\Bundle\BusBundle\EventListener;
 
 use Autobus\Bundle\BusBundle\Entity\CronJob;
 use Autobus\Bundle\BusBundle\Entity\QueueJob;
+use Autobus\Bundle\BusBundle\Entity\TopicJob;
 use Autobus\Bundle\BusBundle\Entity\WebJob;
 use Autobus\Bundle\BusBundle\Event\RunnerEvents;
 use Autobus\Bundle\BusBundle\Event\RunnerHandleEvent;
@@ -54,6 +55,11 @@ class StartExecutionSubscriber implements EventSubscriberInterface
         $execution
             ->setJob($job)
             ->start();
+
+        // Write message as request for topic job
+        if ($job instanceof TopicJob) {
+            $execution->setRequest($event->getContext()->getMessage());
+        }
 
         if ($job instanceof WebJob) {
             $allowedMethods = $job->getMethods(); // ?
