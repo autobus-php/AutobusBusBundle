@@ -87,6 +87,8 @@ services:
 
   Autobus\Bundle\BusBundle\Helper\TopicHelper: ~
 
+  Autobus\Bundle\BusBundle\Helper\SqsHelper: ~
+
   # Command
   Autobus\Bundle\BusBundle\Command\AutobusCronRunCommand:
     tags:
