@@ -22,7 +22,10 @@
         "php": ">=8.0",
         "knplabs/knp-paginator-bundle": "5.6.*",
         "enqueue/enqueue-bundle": "0.10.*",
-        "enqueue/gps": "0.10.*",
         "mtdowling/cron-expression": "1.2.*"
+    },
+    "suggest": {
+        "enqueue/gps": "To use Google PubSub queuing system",
+        "enqueue/sqs": "To use AWS SQS queuing system"
     }
 }

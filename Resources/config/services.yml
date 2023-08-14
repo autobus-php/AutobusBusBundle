@@ -78,6 +78,8 @@ services:
 
   Autobus\Bundle\BusBundle\Queue\PubSubWriter: ~
 
+  Autobus\Bundle\BusBundle\Queue\SqsWriter: ~
+
   # Helper
   Autobus\Bundle\BusBundle\Helper\JobHelper:
     arguments:
@@ -93,3 +95,8 @@ services:
   Autobus\Bundle\BusBundle\Command\PubSubConsumeCommand:
     tags:
     - { name: console.command }
+
+  Autobus\Bundle\BusBundle\Command\SqsConsumeCommand:
+    tags:
+      - { name: console.command }
+
