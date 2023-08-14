@@ -28,6 +28,19 @@ composer require enqueue/gps:0.10.*
 composer require enqueue/sqs:0.10.*
 ```
 
+### Environment variables
+
+Update your `.env` file to add:
+```
+# 'gps:' for Google PubSub / 'sqs:' for AWS SQS 
+ENQUEUE_DSN=sqs:
+
+# Only for AWS SQS usage
+AWS_REGION=
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+```
+
 ## Configuration
 
 ### Topic jobs
