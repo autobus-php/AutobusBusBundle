@@ -87,8 +87,51 @@ class SqsHelper
     {
         try {
             $this->sqsClient->sendMessage([
-                'QueueUrl' => $queueUrl,
+                'QueueUrl'    => $queueUrl,
                 'MessageBody' => $message
+            ]);
+            return true;
+        } catch (AwsException $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Get messages for $queueUrl
+     *
+     * @param string $queueUrl
+     *
+     * @return array
+     */
+    public function getMessages($queueUrl)
+    {
+        try {
+            $result = $this->sqsClient->receiveMessage([
+                'QueueUrl' => $queueUrl
+            ]);
+            if ($result->hasKey('Messages')) {
+                return $result->get('Messages');
+            }
+            return [];
+        } catch (AwsException $e) {
+            return [];
+        }
+    }
+
+    /**
+     * Delete message by $queueUrl and $receiptHandle
+     *
+     * @param string $queueUrl
+     * @param string $receiptHandle
+     *
+     * @return bool
+     */
+    public function deleteMessage($queueUrl, $receiptHandle)
+    {
+        try {
+            $this->sqsClient->deleteMessage([
+                'QueueUrl'      => $queueUrl,
+                'ReceiptHandle' => $receiptHandle
             ]);
             return true;
         } catch (AwsException $e) {

@@ -40,7 +40,7 @@ class SqsWriter implements WriterInterface
      */
     public function write($topicName, $message)
     {
-        $queueName = $this->topicHelper->getRealTopicName($topicName);
+        $queueName       = $this->topicHelper->getRealTopicName($topicName);
 
         // Create / get queue
         $queueUrl = $this->sqsHelper->getQueueUrlByName($queueName);

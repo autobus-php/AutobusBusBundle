@@ -2,8 +2,12 @@
 
 namespace Autobus\Bundle\BusBundle\Command;
 
+use Autobus\Bundle\BusBundle\Context;
+use Autobus\Bundle\BusBundle\Entity\Execution;
 use Autobus\Bundle\BusBundle\Entity\TopicJob;
+use Autobus\Bundle\BusBundle\Helper\SqsHelper;
 use Autobus\Bundle\BusBundle\Helper\TopicHelper;
+use Autobus\Bundle\BusBundle\Runner\AbstractTopicRunner;
 use Doctrine\ORM\EntityManagerInterface;
 use Monolog\Logger;
 use Psr\Container\ContainerInterface;
@@ -49,6 +53,11 @@ class SqsConsumeCommand extends Command
     protected $topicHelper;
 
     /**
+     * @var SqsHelper
+     */
+    protected $sqsHelper;
+
+    /**
      * QueueConsumeCommand constructor.
      *
      * @param string|null            $name
@@ -56,14 +65,23 @@ class SqsConsumeCommand extends Command
      * @param LoggerInterface        $logger
      * @param EntityManagerInterface $entityManager
      * @param TopicHelper            $topicHelper
+     * @param SqsHelper              $sqsHelper
      */
-    public function __construct(string $name = null, ContainerInterface $container, LoggerInterface $logger, EntityManagerInterface $entityManager, TopicHelper $topicHelper)
+    public function __construct(
+        string $name = null,
+        ContainerInterface $container,
+        LoggerInterface $logger,
+        EntityManagerInterface $entityManager,
+        TopicHelper $topicHelper,
+        SqsHelper $sqsHelper
+    )
     {
         parent::__construct($name);
         $this->container     = $container;
         $this->logger        = $logger;
         $this->entityManager = $entityManager;
         $this->topicHelper   = $topicHelper;
+        $this->sqsHelper     = $sqsHelper;
     }
 
     /**
@@ -85,7 +103,7 @@ class SqsConsumeCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $wait         = $input->getOption('wait');
+        $wait = $input->getOption('wait');
 
         while (1) {
             /** @var TopicJob[] $topicJobs */
@@ -94,10 +112,59 @@ class SqsConsumeCommand extends Command
             // Pull messages for each job
             foreach ($topicJobs as $topicJob) {
                 $topicName     = $topicJob->getTopic();
-                $realTopicName = $subscriptionName = $this->topicHelper->getRealTopicName($topicName);
-                // TODO : pull messages here
+                $realTopicName = $this->topicHelper->getRealTopicName($topicName);
+                $queueUrl      = $this->sqsHelper->getQueueUrlByName($realTopicName);
+                if ($queueUrl === null) {
+                    $this->logger->warning(sprintf('[%s] No queue with name %s', __METHOD__, $realTopicName));
+                    continue;
+                }
+
+                $messages = $this->sqsHelper->getMessages($queueUrl);
+                foreach ($messages as $message) {
+                    if ($this->processMessage($topicJob, $message)) {
+                        $this->sqsHelper->deleteMessage($queueUrl, $message['ReceiptHandle']);
+                    }
+                }
             }
             sleep($wait);
         }
+    }
+
+    /**
+     * Process sqs message
+     *
+     * @param TopicJob $topicJob
+     * @param array    $message
+     *
+     * @return bool
+     */
+    protected function processMessage(TopicJob $topicJob, $message)
+    {
+        try {
+            // Get runner
+            /** @var AbstractTopicRunner $runner */
+            $runner = $this->container->get($topicJob->getRunner());
+
+            // Process message
+            $execution = new Execution();
+            $context   = new Context();
+            $context->setMessage($message['Body']);
+            $runner->handle($context, $topicJob, $execution);
+            $this->entityManager->persist($execution);
+            $this->entityManager->persist($topicJob);
+            $this->entityManager->flush();
+        } catch (\Exception $exception) {
+            $this->logger->error(sprintf(
+                    '[%s] Error during execution creation for topicjob %s with message : %s',
+                    __METHOD__,
+                    $topicJob->getName(),
+                    $exception->getMessage()
+                )
+            );
+
+            return false;
+        }
+
+        return true;
     }
 }
