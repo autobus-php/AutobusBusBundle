@@ -2,16 +2,16 @@
 
 namespace Autobus\Bundle\BusBundle\Queue;
 
-use Google\Cloud\PubSub\PubSubClient;
+use Autobus\Bundle\BusBundle\Helper\SqsHelper;
 use Autobus\Bundle\BusBundle\Helper\TopicHelper;
 
 /**
- * Google PubSub writer
+ * AWS SQS writer
  *
  * @author  Simon CARRE <simon.carre@clickandmortar.fr>
  * @package Autobus\Bundle\BusBundle\Queue
  */
-class PubSubWriter implements WriterInterface
+class SqsWriter implements WriterInterface
 {
     /**
      * @var TopicHelper
@@ -19,13 +19,20 @@ class PubSubWriter implements WriterInterface
     protected $topicHelper;
 
     /**
+     * @var  SqsHelper
+     */
+    protected $sqsHelper;
+
+    /**
      * Writer constructor.
      *
      * @param TopicHelper $topicHelper
+     * @param SqsHelper   $sqsHelper
      */
-    public function __construct(TopicHelper $topicHelper)
+    public function __construct(TopicHelper $topicHelper, SqsHelper $sqsHelper)
     {
         $this->topicHelper = $topicHelper;
+        $this->sqsHelper   = $sqsHelper;
     }
 
     /**
@@ -33,16 +40,16 @@ class PubSubWriter implements WriterInterface
      */
     public function write($topicName, $message)
     {
-        $pubSubClient  = new PubSubClient();
-        $realTopicName = $this->topicHelper->getRealTopicName($topicName);
-        $topic         = $pubSubClient->topic($realTopicName);
-        if (!$topic->exists()) {
-            $topic = $pubSubClient->createTopic($realTopicName);
+        $queueName       = $this->topicHelper->getRealTopicName($topicName);
+
+        // Create / get queue
+        $queueUrl = $this->sqsHelper->getQueueUrlByName($queueName);
+        if ($queueUrl === null) {
+            $queueUrl = $this->sqsHelper->createQueue($queueName);
         }
 
-        $topic->publish([
-            'data' => $message,
-        ]);
+        // Write message to queue
+        $this->sqsHelper->writeMessage($queueUrl, $message);
     }
 
     /**

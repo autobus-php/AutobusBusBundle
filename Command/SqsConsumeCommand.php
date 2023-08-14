@@ -5,10 +5,10 @@ namespace Autobus\Bundle\BusBundle\Command;
 use Autobus\Bundle\BusBundle\Context;
 use Autobus\Bundle\BusBundle\Entity\Execution;
 use Autobus\Bundle\BusBundle\Entity\TopicJob;
+use Autobus\Bundle\BusBundle\Helper\SqsHelper;
 use Autobus\Bundle\BusBundle\Helper\TopicHelper;
 use Autobus\Bundle\BusBundle\Runner\AbstractTopicRunner;
 use Doctrine\ORM\EntityManagerInterface;
-use Google\Cloud\PubSub\Message;
 use Monolog\Logger;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
@@ -16,15 +16,14 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Google\Cloud\PubSub\PubSubClient;
 
 /**
- * Consume Google PubSub messages for current register topics
+ * Consume AWS SQS messages for current register topics
  *
  * @author  Simon CARRE <simon.carre@clickandmortar.fr>
  * @package Autobus\Bundle\BusBundle\Command
  */
-class PubSubConsumeCommand extends Command
+class SqsConsumeCommand extends Command
 {
     /**
      * Run pull command every 10 seconds
@@ -54,21 +53,35 @@ class PubSubConsumeCommand extends Command
     protected $topicHelper;
 
     /**
+     * @var SqsHelper
+     */
+    protected $sqsHelper;
+
+    /**
      * QueueConsumeCommand constructor.
      *
      * @param string|null            $name
      * @param ContainerInterface     $container
      * @param LoggerInterface        $logger
      * @param EntityManagerInterface $entityManager
-     * @param TopicHelper           $topicHelper
+     * @param TopicHelper            $topicHelper
+     * @param SqsHelper              $sqsHelper
      */
-    public function __construct(string $name = null, ContainerInterface $container, LoggerInterface $logger, EntityManagerInterface $entityManager, TopicHelper $topicHelper)
+    public function __construct(
+        string $name = null,
+        ContainerInterface $container,
+        LoggerInterface $logger,
+        EntityManagerInterface $entityManager,
+        TopicHelper $topicHelper,
+        SqsHelper $sqsHelper
+    )
     {
         parent::__construct($name);
         $this->container     = $container;
         $this->logger        = $logger;
         $this->entityManager = $entityManager;
-        $this->topicHelper  = $topicHelper;
+        $this->topicHelper   = $topicHelper;
+        $this->sqsHelper     = $sqsHelper;
     }
 
     /**
@@ -77,8 +90,8 @@ class PubSubConsumeCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('autobus:pubsub:consume')
-            ->setDescription('Consume Google PubSub messages for current register topics')
+            ->setName('autobus:sqs:consume')
+            ->setDescription('Consume AWS SQS messages for current register topics')
             ->addOption('wait', 'w', InputOption::VALUE_OPTIONAL, 'Sleep time in seconds between each pull command', self::DEFAULT_WAIT);
     }
 
@@ -90,8 +103,7 @@ class PubSubConsumeCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $pubSubClient = new PubSubClient();
-        $wait         = $input->getOption('wait');
+        $wait = $input->getOption('wait');
 
         while (1) {
             /** @var TopicJob[] $topicJobs */
@@ -100,27 +112,17 @@ class PubSubConsumeCommand extends Command
             // Pull messages for each job
             foreach ($topicJobs as $topicJob) {
                 $topicName     = $topicJob->getTopic();
-                $realTopicName = $subscriptionName = $this->topicHelper->getRealTopicName($topicName);
-                $subscription  = $pubSubClient->subscription($subscriptionName);
-                if (!$subscription->exists()) {
-                    // Check topic
-                    $topic = $pubSubClient->topic($realTopicName);
-                    if (!$topic->exists()) {
-                        $this->logger->warning(sprintf('[%s] No topic with name %s for subscription', __METHOD__, $realTopicName));
-                        continue;
-                    }
-
-                    // Create subscription
-                    $subscription = $pubSubClient->subscribe($subscriptionName, $realTopicName);
+                $realTopicName = $this->topicHelper->getRealTopicName($topicName);
+                $queueUrl      = $this->sqsHelper->getQueueUrlByName($realTopicName);
+                if ($queueUrl === null) {
+                    $this->logger->warning(sprintf('[%s] No queue with name %s', __METHOD__, $realTopicName));
+                    continue;
                 }
 
-                // Process messages
-                $messages = $subscription->pull();
-                if (!empty($messages)) {
-                    foreach ($messages as $message) {
-                        if ($this->processMessage($topicJob, $message)) {
-                            $subscription->acknowledge($message);
-                        }
+                $messages = $this->sqsHelper->getMessages($queueUrl);
+                foreach ($messages as $message) {
+                    if ($this->processMessage($topicJob, $message)) {
+                        $this->sqsHelper->deleteMessage($queueUrl, $message['ReceiptHandle']);
                     }
                 }
             }
@@ -129,14 +131,14 @@ class PubSubConsumeCommand extends Command
     }
 
     /**
-     * Process pubsub message
+     * Process sqs message
      *
      * @param TopicJob $topicJob
-     * @param Message  $message
+     * @param array    $message
      *
      * @return bool
      */
-    protected function processMessage(TopicJob $topicJob, Message $message)
+    protected function processMessage(TopicJob $topicJob, $message)
     {
         try {
             // Get runner
@@ -146,7 +148,7 @@ class PubSubConsumeCommand extends Command
             // Process message
             $execution = new Execution();
             $context   = new Context();
-            $context->setMessage($message->data());
+            $context->setMessage($message['Body']);
             $runner->handle($context, $topicJob, $execution);
             $this->entityManager->persist($execution);
             $this->entityManager->persist($topicJob);

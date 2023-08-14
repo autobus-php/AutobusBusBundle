@@ -5,12 +5,12 @@ namespace Autobus\Bundle\BusBundle\Helper;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
- * PubSubHelper
+ * Topic helper
  *
  * @author  Simon CARRE <simon.carre@clickandmortar.fr>
  * @package Autobus\Bundle\BusBundle\Helper
  */
-class PubSubHelper
+class TopicHelper
 {
     /**
      * @var KernelInterface
@@ -18,7 +18,7 @@ class PubSubHelper
     protected $kernel;
 
     /**
-     * PubSubHelper constructor.
+     * TopicHelper constructor.
      *
      * @param KernelInterface $kernel
      */
@@ -28,7 +28,7 @@ class PubSubHelper
     }
 
     /**
-     * Get real topic name in Google PubSub by adding env as suffix
+     * Get real topic name by adding env as suffix
      *
      * @param string $topicName
      *
