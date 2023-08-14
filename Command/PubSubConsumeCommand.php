@@ -5,7 +5,7 @@ namespace Autobus\Bundle\BusBundle\Command;
 use Autobus\Bundle\BusBundle\Context;
 use Autobus\Bundle\BusBundle\Entity\Execution;
 use Autobus\Bundle\BusBundle\Entity\TopicJob;
-use Autobus\Bundle\BusBundle\Helper\PubSubHelper;
+use Autobus\Bundle\BusBundle\Helper\TopicHelper;
 use Autobus\Bundle\BusBundle\Runner\AbstractTopicRunner;
 use Doctrine\ORM\EntityManagerInterface;
 use Google\Cloud\PubSub\Message;
@@ -49,9 +49,9 @@ class PubSubConsumeCommand extends Command
     protected $entityManager;
 
     /**
-     * @var PubSubHelper
+     * @var TopicHelper
      */
-    protected $pubSubHelper;
+    protected $topicHelper;
 
     /**
      * QueueConsumeCommand constructor.
@@ -60,15 +60,15 @@ class PubSubConsumeCommand extends Command
      * @param ContainerInterface     $container
      * @param LoggerInterface        $logger
      * @param EntityManagerInterface $entityManager
-     * @param PubSubHelper           $pubSubHelper
+     * @param TopicHelper           $topicHelper
      */
-    public function __construct(string $name = null, ContainerInterface $container, LoggerInterface $logger, EntityManagerInterface $entityManager, PubSubHelper $pubSubHelper)
+    public function __construct(string $name = null, ContainerInterface $container, LoggerInterface $logger, EntityManagerInterface $entityManager, TopicHelper $topicHelper)
     {
         parent::__construct($name);
         $this->container     = $container;
         $this->logger        = $logger;
         $this->entityManager = $entityManager;
-        $this->pubSubHelper  = $pubSubHelper;
+        $this->topicHelper  = $topicHelper;
     }
 
     /**
@@ -100,7 +100,7 @@ class PubSubConsumeCommand extends Command
             // Pull messages for each job
             foreach ($topicJobs as $topicJob) {
                 $topicName     = $topicJob->getTopic();
-                $realTopicName = $subscriptionName = $this->pubSubHelper->getRealTopicName($topicName);
+                $realTopicName = $subscriptionName = $this->topicHelper->getRealTopicName($topicName);
                 $subscription  = $pubSubClient->subscription($subscriptionName);
                 if (!$subscription->exists()) {
                     // Check topic

@@ -83,7 +83,7 @@ services:
     arguments:
       - '@kernel'
 
-  Autobus\Bundle\BusBundle\Helper\PubSubHelper: ~
+  Autobus\Bundle\BusBundle\Helper\TopicHelper: ~
 
   # Command
   Autobus\Bundle\BusBundle\Command\AutobusCronRunCommand:

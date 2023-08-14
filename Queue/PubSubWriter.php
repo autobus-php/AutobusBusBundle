@@ -3,7 +3,7 @@
 namespace Autobus\Bundle\BusBundle\Queue;
 
 use Google\Cloud\PubSub\PubSubClient;
-use Autobus\Bundle\BusBundle\Helper\PubSubHelper;
+use Autobus\Bundle\BusBundle\Helper\TopicHelper;
 
 /**
  * Google PubSub writer
@@ -14,18 +14,18 @@ use Autobus\Bundle\BusBundle\Helper\PubSubHelper;
 class PubSubWriter implements WriterInterface
 {
     /**
-     * @var PubSubHelper
+     * @var TopicHelper
      */
-    protected $pubSubHelper;
+    protected $topicHelper;
 
     /**
      * Writer constructor.
      *
-     * @param PubSubHelper $pubSubHelper
+     * @param TopicHelper $topicHelper
      */
-    public function __construct(PubSubHelper $pubSubHelper)
+    public function __construct(TopicHelper $topicHelper)
     {
-        $this->pubSubHelper = $pubSubHelper;
+        $this->topicHelper = $topicHelper;
     }
 
     /**
@@ -34,7 +34,7 @@ class PubSubWriter implements WriterInterface
     public function write($topicName, $message)
     {
         $pubSubClient  = new PubSubClient();
-        $realTopicName = $this->pubSubHelper->getRealTopicName($topicName);
+        $realTopicName = $this->topicHelper->getRealTopicName($topicName);
         $topic         = $pubSubClient->topic($realTopicName);
         if (!$topic->exists()) {
             $topic = $pubSubClient->createTopic($realTopicName);
