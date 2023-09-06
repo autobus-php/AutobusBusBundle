@@ -74,9 +74,6 @@ services:
       - '@router.request_context'
 
   # Queue
-  Autobus\Bundle\BusBundle\Queue\EnqueueWriter:
-    tags: ['bus.queue_writer']
-
   Autobus\Bundle\BusBundle\Queue\PubSubWriter:
     tags: ['bus.queue_writer']
 

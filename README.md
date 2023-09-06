@@ -45,14 +45,7 @@ AWS_SECRET_ACCESS_KEY=
 
 ### Topic jobs
 
-3 queuing systems are available:
-
-* With **Enqueue** library and usage of RabbitMQ for example:
-
-Add the following line to your crontab:
-```
-* * * * * php bin/console enqueue:consume --setup-broker -vvv
-``` 
+2 queuing systems are available:
 
 * With **Google PubSub**:
 
