@@ -51,4 +51,14 @@ class EnqueueWriter implements WriterInterface
 
         $this->write($topic, $message);
     }
+
+    /**
+     * @param string $type
+     *
+     * @return bool
+     */
+    public function supports(string $type): bool
+    {
+        return $type === 'amqps:';
+    }
 }

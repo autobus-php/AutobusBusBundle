@@ -74,11 +74,20 @@ services:
       - '@router.request_context'
 
   # Queue
-  Autobus\Bundle\BusBundle\Queue\EnqueueWriter: ~
+  Autobus\Bundle\BusBundle\Queue\EnqueueWriter:
+    tags: ['bus.queue_writer']
 
-  Autobus\Bundle\BusBundle\Queue\PubSubWriter: ~
+  Autobus\Bundle\BusBundle\Queue\PubSubWriter:
+    tags: ['bus.queue_writer']
 
-  Autobus\Bundle\BusBundle\Queue\SqsWriter: ~
+  Autobus\Bundle\BusBundle\Queue\SqsWriter:
+    tags: ['bus.queue_writer']
+
+  Autobus\Bundle\BusBundle\Queue\WriterCollection:
+    arguments: [ !tagged bus.queue_writer ]
+    public: true
+
+  Autobus\Bundle\BusBundle\Queue\WriterFactory: ~
 
   # Helper
   Autobus\Bundle\BusBundle\Helper\JobHelper:

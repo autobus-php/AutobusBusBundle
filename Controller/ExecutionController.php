@@ -4,7 +4,8 @@ namespace Autobus\Bundle\BusBundle\Controller;
 
 use Autobus\Bundle\BusBundle\Entity\Execution;
 use Autobus\Bundle\BusBundle\Entity\TopicJob;
-use Autobus\Bundle\BusBundle\Queue\PubSubWriter as QueueWriter;
+use Autobus\Bundle\BusBundle\Queue\WriterFactory;
+use Autobus\Bundle\BusBundle\Queue\WriterInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -14,16 +15,18 @@ use Symfony\Component\HttpFoundation\Request;
 class ExecutionController extends Controller
 {
     /**
-     * @var QueueWriter
+     * @var WriterInterface
      */
     protected $queueWriter;
 
     /**
-     * @param JobUrlMatcher $urlMatcher
+     * @param WriterFactory $writerFactory
+     *
+     * @throws \Exception
      */
-    public function __construct(QueueWriter $queueWriter)
+    public function __construct(WriterFactory $writerFactory)
     {
-        $this->queueWriter = $queueWriter;
+        $this->queueWriter = $writerFactory->create(getenv('ENQUEUE_DSN'));
     }
 
     /**

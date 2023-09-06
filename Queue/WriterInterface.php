@@ -18,4 +18,11 @@ interface WriterInterface
      * @return void
      */
     public function write($topic, $message);
+
+    /**
+     * @param string $type
+     *
+     * @return bool
+     */
+    public function supports(string $type): bool;
 }

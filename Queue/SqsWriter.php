@@ -64,4 +64,14 @@ class SqsWriter implements WriterInterface
     {
         $this->write($topicName, json_encode($data));
     }
+
+    /**
+     * @param string $type
+     *
+     * @return bool
+     */
+    public function supports(string $type): bool
+    {
+        return $type === 'sqs:';
+    }
 }
