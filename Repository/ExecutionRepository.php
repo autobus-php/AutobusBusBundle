@@ -30,4 +30,20 @@ class ExecutionRepository extends \Doctrine\ORM\EntityRepository
                     ->orderBy('e.date', $dateSort)
                     ->getQuery();
     }
+
+    /**
+     * Get executions created before $date
+     *
+     * @param \DateTime $date
+     *
+     * @return Execution[]
+     */
+    public function getBeforeDate(\DateTime $date)
+    {
+        return $this->createQueryBuilder('e')
+                    ->where('e.date < :date')
+                    ->setParameter('date', $date->format('Y-m-d H:i:s'))
+                    ->getQuery()
+                    ->getResult();
+    }
 }

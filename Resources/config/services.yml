@@ -108,3 +108,7 @@ services:
     tags:
       - { name: console.command }
 
+  Autobus\Bundle\BusBundle\Command\ClearExecutionsCommand:
+    tags:
+      - { name: console.command }
+
