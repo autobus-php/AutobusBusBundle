@@ -115,8 +115,8 @@ class SqsConsumeCommand extends Command
                 $realTopicName = $this->topicHelper->getRealTopicName($topicName);
                 $queueUrl      = $this->sqsHelper->getQueueUrlByName($realTopicName);
                 if ($queueUrl === null) {
-                    $this->logger->warning(sprintf('[%s] No queue with name %s', __METHOD__, $realTopicName));
-                    continue;
+                    $this->logger->error(sprintf('[%s] No queue with name %s', __METHOD__, $realTopicName));
+                    return;
                 }
 
                 $messages = $this->sqsHelper->getMessages($queueUrl);
