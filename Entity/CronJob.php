@@ -7,11 +7,13 @@ use Cron\CronExpression;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
 
 /**
  * CronJob
  *
  * @ORM\Entity(repositoryClass="Autobus\Bundle\BusBundle\Repository\CronJobRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class CronJob extends Job implements CronJobInterface
 {
@@ -31,20 +33,22 @@ class CronJob extends Job implements CronJobInterface
 
     /**
      * @Assert\Callback
+     *
      * @param ExecutionContextInterface $context
-     * @param $payload
+     * @param                           $payload
      */
     public function validate(ExecutionContextInterface $context, $payload)
     {
         if (!CronExpression::isValidExpression($this->getSchedule())) {
             $context->buildViolation('Invalid schedule format (should be cron-compliant)')
-              ->atPath('schedule')
-              ->addViolation();
+                    ->atPath('schedule')
+                    ->addViolation();
         }
     }
 
     /**
      * @param array $schedule
+     *
      * @return CronJob
      */
     public function setSchedule($schedule)
@@ -64,6 +68,7 @@ class CronJob extends Job implements CronJobInterface
 
     /**
      * @param string $nextRunDate
+     *
      * @return CronJob
      */
     public function setNextRunDate($nextRunDate)
@@ -91,5 +96,20 @@ class CronJob extends Job implements CronJobInterface
         }
 
         $this->setNextRunDate($date);
+    }
+
+    /**
+     * @ORM\PreUpdate
+     */
+    public function updateNextRunDate(PreUpdateEventArgs $event)
+    {
+        $changeSet = $event->getEntityChangeSet();
+        if (
+            isset($changeSet['schedule'][0])
+            && isset($changeSet['schedule'][1])
+            && $changeSet['schedule'][0] != $changeSet['schedule'][1]
+        ) {
+            $this->setNextRunDate(null);
+        }
     }
 }
