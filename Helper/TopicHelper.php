@@ -37,7 +37,7 @@ class TopicHelper
     public function getRealTopicName(string $topicName)
     {
         return sprintf(
-            '%s_%s',
+            '%s_%s.fifo',
             $topicName,
             $this->kernel->getEnvironment()
         );

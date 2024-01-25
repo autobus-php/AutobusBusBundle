@@ -22,6 +22,27 @@ class SqsHelper
     const SQS_VERSION = '2012-11-05';
 
     /**
+     * SQS default message retention period (10 days)
+     *
+     * @var int
+     */
+    const SQS_MESSAGE_RETENTION_PERIOD = 864000;
+
+    /**
+     * SQS default visibility timeout (10 seconds)
+     *
+     * @var int
+     */
+    const SQS_VISIBILITY_TIMEOUT = 10;
+
+    /**
+     * SQS default message group id
+     *
+     * @var int
+     */
+    const SQS_MESSAGE_GROUP_ID = 'autobus';
+
+    /**
      * @var  SqsClient
      */
     protected $sqsClient;
@@ -67,7 +88,13 @@ class SqsHelper
     {
         try {
             $result = $this->sqsClient->createQueue([
-                'QueueName' => $queueName,
+                'QueueName'  => $queueName,
+                'Attributes' => [
+                    'FifoQueue'                 => 'true',
+                    'MessageRetentionPeriod'    => self::SQS_MESSAGE_RETENTION_PERIOD,
+                    'VisibilityTimeout'         => self::SQS_VISIBILITY_TIMEOUT,
+                    'ContentBasedDeduplication' => 'true'
+                ]
             ]);
             return $result->get('QueueUrl');
         } catch (AwsException $e) {
@@ -87,8 +114,9 @@ class SqsHelper
     {
         try {
             $this->sqsClient->sendMessage([
-                'QueueUrl'    => $queueUrl,
-                'MessageBody' => $message
+                'QueueUrl'       => $queueUrl,
+                'MessageBody'    => $message,
+                'MessageGroupId' => self::SQS_MESSAGE_GROUP_ID
             ]);
             return true;
         } catch (AwsException $e) {
