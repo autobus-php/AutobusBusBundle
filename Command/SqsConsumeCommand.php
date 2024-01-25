@@ -131,8 +131,11 @@ class SqsConsumeCommand extends Command
 
                 $messages = $this->sqsHelper->getMessages($queueUrl);
                 foreach ($messages as $message) {
-                    if ($this->processMessage($topicJob, $message)) {
-                        $this->sqsHelper->deleteMessage($queueUrl, $message['ReceiptHandle']);
+                    $this->sqsHelper->deleteMessage($queueUrl, $message['ReceiptHandle']);
+                    if (!$this->processMessage($topicJob, $message)) {
+                        $this->logger->error(sprintf("[%s] Error with message processing for message : \n%s", __METHOD__, print_r($message, true)));
+
+                        return 1;
                     }
                 }
             }
