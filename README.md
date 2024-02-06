@@ -56,9 +56,9 @@ php bin/console autobus:pubsub:consume
 
 * With **AWS SQS**:
 
-Execute the following command with **Supervisor** tool:
+  Add the following line to your crontab:
 ```
-php bin/console autobus:sqs:consume
+*/5 * * * * php bin/console autobus:sqs:consume
 ```
 
 ### Cron jobs

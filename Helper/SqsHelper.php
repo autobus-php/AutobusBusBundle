@@ -43,6 +43,13 @@ class SqsHelper
     const SQS_MESSAGE_GROUP_ID = 'autobus';
 
     /**
+     * Default value for max number of messages to pull
+     *
+     * @var int
+     */
+    const SQS_DEFAULT_MAX_NUMBER_OF_MESSAGES = 10;
+
+    /**
      * @var  SqsClient
      */
     protected $sqsClient;
@@ -131,11 +138,12 @@ class SqsHelper
      *
      * @return array
      */
-    public function getMessages($queueUrl)
+    public function getMessages($queueUrl, $limit = self::SQS_DEFAULT_MAX_NUMBER_OF_MESSAGES)
     {
         try {
             $result = $this->sqsClient->receiveMessage([
-                'QueueUrl' => $queueUrl
+                'QueueUrl'            => $queueUrl,
+                'MaxNumberOfMessages' => $limit
             ]);
             if ($result->hasKey('Messages')) {
                 return $result->get('Messages');

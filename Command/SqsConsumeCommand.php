@@ -26,20 +26,6 @@ use Symfony\Component\Console\Input\InputOption;
 class SqsConsumeCommand extends Command
 {
     /**
-     * Run pull command every 10 seconds
-     *
-     * @var int
-     */
-    const DEFAULT_WAIT = 10;
-
-    /**
-     * Default limit for pulls
-     *
-     * @var int
-     */
-    const DEFAULT_LIMIT = -1;
-
-    /**
      * @var ContainerInterface
      */
     protected $container;
@@ -98,9 +84,7 @@ class SqsConsumeCommand extends Command
     {
         $this
             ->setName('autobus:sqs:consume')
-            ->setDescription('Consume AWS SQS messages for current register topics')
-            ->addOption('wait', 'w', InputOption::VALUE_OPTIONAL, 'Sleep time in seconds between each pull command', self::DEFAULT_WAIT)
-            ->addOption('limit', 'l', InputOption::VALUE_OPTIONAL, 'Number of pulls before stopping command. -1 to disable', self::DEFAULT_LIMIT);
+            ->setDescription('Consume AWS SQS messages for current register topics');
     }
 
     /**
@@ -111,35 +95,28 @@ class SqsConsumeCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $pullIndex = 0;
-        $wait      = $input->getOption('wait');
-        $limit     = intval($input->getOption('limit'));
         /** @var TopicJob[] $topicJobs */
         $topicJobs = $this->entityManager->getRepository('AutobusBusBundle:TopicJob')->findAll();
 
-        while ($pullIndex < $limit || $limit === -1) {
-            // Pull messages for each job
-            foreach ($topicJobs as $topicJob) {
-                $pullIndex++;
-                $topicName     = $topicJob->getTopic();
-                $realTopicName = $this->topicHelper->getRealTopicName($topicName);
-                $queueUrl      = $this->sqsHelper->getQueueUrlByName($realTopicName);
-                if ($queueUrl === null) {
-                    $this->logger->warning(sprintf('[%s] No queue with name %s', __METHOD__, $realTopicName));
-                    continue;
-                }
+        // Pull messages for each job
+        foreach ($topicJobs as $topicJob) {
+            $topicName     = $topicJob->getTopic();
+            $realTopicName = $this->topicHelper->getRealTopicName($topicName);
+            $queueUrl      = $this->sqsHelper->getQueueUrlByName($realTopicName);
+            if ($queueUrl === null) {
+                $this->logger->warning(sprintf('[%s] No queue with name %s', __METHOD__, $realTopicName));
+                continue;
+            }
 
-                $messages = $this->sqsHelper->getMessages($queueUrl);
-                foreach ($messages as $message) {
-                    $this->sqsHelper->deleteMessage($queueUrl, $message['ReceiptHandle']);
-                    if (!$this->processMessage($topicJob, $message)) {
-                        $this->logger->error(sprintf("[%s] Error with message processing for message : \n%s", __METHOD__, print_r($message, true)));
+            $messages = $this->sqsHelper->getMessages($queueUrl);
+            foreach ($messages as $message) {
+                $this->sqsHelper->deleteMessage($queueUrl, $message['ReceiptHandle']);
+                if (!$this->processMessage($topicJob, $message)) {
+                    $this->logger->error(sprintf("[%s] Error with message processing for message : \n%s", __METHOD__, print_r($message, true)));
 
-                        return 1;
-                    }
+                    return 1;
                 }
             }
-            sleep($wait);
         }
     }
 
